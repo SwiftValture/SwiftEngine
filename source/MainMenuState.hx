@@ -90,10 +90,10 @@ class MainMenuState extends MusicBeatState
 			FlxFlicker.flicker(magenta, 1.1, 0.15, false, true);
 		});
 
-		menuItems.enabled = false; // disable for intro
+		menuItems.enabled = true;
 		menuItems.createItem('story mode', function() startExitState(new StoryMenuState()));
 		menuItems.createItem('freeplay', function() startExitState(new FreeplayState()));
-		// addMenuItem('options', function () startExitState(new OptionMenu()));
+
 		#if CAN_OPEN_LINKS
 		var hasPopupBlocker = #if web true #else false #end;
 
@@ -103,14 +103,7 @@ class MainMenuState extends MusicBeatState
 			menuItems.createItem('donate', selectDonate, hasPopupBlocker);
 		#end
 		menuItems.createItem('options', function() startExitState(new OptionsState()));
-		// #if newgrounds
-		// 	if (NGio.isLoggedIn)
-		// 		menuItems.createItem("logout", selectLogout);
-		// 	else
-		// 		menuItems.createItem("login", selectLogin);
-		// #end
 
-		// center vertically
 		var spacing = 160;
 		var top = (FlxG.height - (spacing * (menuItems.length - 1))) / 2;
 		for (i in 0...menuItems.length)
@@ -122,16 +115,11 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.cameras.reset(new SwagCamera());
 		FlxG.camera.follow(camFollow, null, 0.06);
-		// FlxG.camera.setScrollBounds(bg.x, bg.x + bg.width, bg.y, bg.y + bg.height * 1.2);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "SwiftEngine version: " + Application.current.meta.get('version'), 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-
-		//versionShit.text += '(Newgrounds exclusive preview)';
-
-		// NG.core.calls.event.logEvent('swag').send();
 
 		super.create();
 	}
@@ -141,11 +129,6 @@ class MainMenuState extends MusicBeatState
 		super.finishTransIn();
 
 		menuItems.enabled = true;
-
-		// #if newgrounds
-		// if (NGio.savedSessionFailed)
-		// 	showSavedSessionFailed();
-		// #end
 	}
 
 	function onMenuItemChange(selected:MenuItem)
@@ -157,15 +140,9 @@ class MainMenuState extends MusicBeatState
 	function selectDonate()
 	{
 		#if linux
-		// Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
-		Sys.command('/usr/bin/xdg-open', [
-			"https://www.kickstarter.com/projects/funkin/friday-night-funkin-the-full-ass-game/",
-			"&"
-		]);
+		Sys.command('/usr/bin/xdg-open', ["https://www.youtube.com/watch?v=i_qMnay6NgA", "&"]);
 		#else
-		// FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
-
-		FlxG.openURL('https://www.kickstarter.com/projects/funkin/friday-night-funkin-the-full-ass-game/');
+		FlxG.openURL('https://www.youtube.com/watch?v=i_qMnay6NgA');
 		#end
 	}
 	#end
@@ -231,7 +208,7 @@ class MainMenuState extends MusicBeatState
 
 	function startExitState(state:FlxState)
 	{
-		menuItems.enabled = false; // disable for exit
+		menuItems.enabled = false;
 		var duration = 0.4;
 		menuItems.forEach(function(item)
 		{

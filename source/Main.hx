@@ -2,9 +2,11 @@ package;
 
 import flixel.FlxGame;
 import flixel.FlxState;
+import flixel.FlxG;
 import openfl.Assets;
 import openfl.Lib;
-import openfl.display.FPS;
+import openfl.events.KeyboardEvent;
+import openfl.ui.Keyboard;
 import openfl.display.Sprite;
 import openfl.events.AsyncErrorEvent;
 import openfl.events.Event;
@@ -16,20 +18,17 @@ import openfl.net.NetStream;
 
 class Main extends Sprite
 {
-	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
-	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
+	var gameWidth:Int = 1280;
+	var gameHeight:Int = 720;
+	var initialState:Class<FlxState> = TitleState;
+	var zoom:Float = -1;
 	#if web
-	var framerate:Int = 60; // How many frames per second the game should run at.
+	var framerate:Int = 240;
 	#else
-	var framerate:Int = 144; // How many frames per second the game should run at.
-
+	var framerate:Int = 240;
 	#end
-	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
-	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
-
-	// You can pretty much ignore everything from here on - your code should go in your states.
+	var skipSplash:Bool = true;
+	var startFullscreen:Bool = false;
 
 	public static function main():Void
 	{
@@ -40,6 +39,8 @@ class Main extends Sprite
 	{
 		super();
 
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+
 		if (stage != null)
 		{
 			init();
@@ -47,6 +48,14 @@ class Main extends Sprite
 		else
 		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
+		}
+	}
+
+	private function onKeyDown(event:KeyboardEvent):Void
+	{
+		if (event.keyCode == Keyboard.F11)
+		{
+			Lib.application.window.fullscreen = !Lib.application.window.fullscreen;
 		}
 	}
 
@@ -64,7 +73,7 @@ class Main extends Sprite
 	var netStream:NetStream;
 	private var overlay:Sprite;
 
-	public static var fpsCounter:FPS;
+	public static var fpsCounter:PerformanceCounter;
 
 	private function setupGame():Void
 	{
@@ -85,60 +94,22 @@ class Main extends Sprite
 		#end
 
 		#if !mobile
-		fpsCounter = new FPS(10, 3, 0xFFFFFF);
+		fpsCounter = new PerformanceCounter(5, 3);
 		#end
 
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen));
 
+		FlxG.save.bind("SwiftEngine");
+
+		if (FlxG.save.data.volume == null)
+			FlxG.save.data.volume = FlxG.sound.volume;
+
+		FlxG.sound.volume = FlxG.save.data.volume;
+
 		#if !mobile
 		addChild(fpsCounter);
 		#end
-		/* 
-			video = new Video();
-			addChild(video);
-
-			var netConnection = new NetConnection();
-			netConnection.connect(null);
-
-			netStream = new NetStream(netConnection);
-			netStream.client = {onMetaData: client_onMetaData};
-			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, netStream_onAsyncError);
-
-			#if (js && html5)
-			overlay = new Sprite();
-			overlay.graphics.beginFill(0, 0.5);
-			overlay.graphics.drawRect(0, 0, 560, 320);
-			overlay.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
-			overlay.buttonMode = true;
-			addChild(overlay);
-
-			netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnection_onNetStatus);
-			#else
-			netStream.play("assets/preload/music/dredd.mp4");
-			#end 
-		 */
 	}
-	/* 
-		private function client_onMetaData(metaData:Dynamic)
-		{
-			video.attachNetStream(netStream);
 
-			video.width = video.videoWidth;
-			video.height = video.videoHeight;
-		}
-
-		private function netStream_onAsyncError(event:AsyncErrorEvent):Void
-		{
-			trace("Error loading video");
-		}
-
-		private function netConnection_onNetStatus(event:NetStatusEvent):Void
-		{
-		}
-
-		private function overlay_onMouseDown(event:MouseEvent):Void
-		{
-			netStream.play("assets/preload/music/dredd.mp4");
-		}
-	 */
+	public function update(elapsed:Float) {}
 }

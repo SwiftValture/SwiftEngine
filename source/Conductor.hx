@@ -1,12 +1,12 @@
 package;
 
 import Song.SwagSong;
+import flixel.FlxG;
 
 /**
  * ...
  * @author
  */
-
 typedef BPMChangeEvent =
 {
 	var stepTime:Int;
@@ -28,8 +28,18 @@ class Conductor
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
-	public function new()
+	public function new() {}
+
+	public static var songPositionDelta:Float = 0;
+	private static var prevTime:Float = 0;
+
+	/**
+	 * Gibt die präzise Song-Position inklusive Frame-Delta zurück.
+	 * Nutze DIESE Funktion für dein Noten-Movement!
+	 */
+	public static function getTimeWithDelta():Float
 	{
+		return songPosition + songPositionDelta;
 	}
 
 	public static function mapBPMChanges(song:SwagSong)
@@ -41,7 +51,7 @@ class Conductor
 		var totalPos:Float = 0;
 		for (i in 0...song.notes.length)
 		{
-			if(song.notes[i].changeBPM && song.notes[i].bpm != curBPM)
+			if (song.notes[i].changeBPM && song.notes[i].bpm != curBPM)
 			{
 				curBPM = song.notes[i].bpm;
 				var event:BPMChangeEvent = {
@@ -65,5 +75,24 @@ class Conductor
 
 		crochet = ((60 / bpm) * 1000);
 		stepCrochet = crochet / 4;
+	}
+
+	public static function update(elapsed:Float):Void
+	{
+		if (FlxG.sound.music != null && FlxG.sound.music.playing)
+		{
+			songPositionDelta += elapsed * 1000;
+
+			if (prevTime != FlxG.sound.music.time)
+			{
+				songPosition = FlxG.sound.music.time + offset;
+				songPositionDelta %= (elapsed * 1000);
+				prevTime = FlxG.sound.music.time;
+			}
+		}
+		else
+		{
+			songPositionDelta = 0;
+		}
 	}
 }

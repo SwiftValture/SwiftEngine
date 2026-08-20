@@ -640,8 +640,8 @@ class Character extends FlxSprite
 					}
 
 				case 'pico-speaker':
-				// lol weed
-				// playAnim('shoot' + FlxG.random.int(1, 4), true);
+					// lol weed
+					// playAnim('shoot' + FlxG.random.int(1, 4), true);
 
 				case 'tankman':
 					if (!animation.curAnim.name.endsWith('DOWN-alt'))

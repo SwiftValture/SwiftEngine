@@ -48,6 +48,7 @@ import sys.thread.Thread;
 class TitleState extends MusicBeatState
 {
 	public static var initialized:Bool = false;
+
 	var startedIntro:Bool;
 
 	var blackScreen:FlxSprite;
@@ -69,10 +70,10 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
+		// #if polymod
+		// polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
 		// FlxG.bitmap.clearCache();
-		#end
+		// #end
 
 		startedIntro = false;
 
@@ -509,7 +510,7 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		if (!startedIntro)
-			return ;
+			return;
 
 		if (skippedIntro)
 		{
