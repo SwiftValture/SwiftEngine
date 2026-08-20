@@ -862,8 +862,9 @@ class PlayState extends MusicBeatState
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		add(healthBar);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 480, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt = new FlxText(0, healthBarBG.y + 36, FlxG.width, "", 16);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt.borderSize = 1.25;
 		scoreTxt.scrollFactor.set();
 		scoreTxt.antialiasing = false;
 
@@ -1632,8 +1633,10 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		scoreTxt.text = "Score: " + FlxStringUtil.formatMoney(songScore, false, true) + " • Misses: " + songMisses + " • Accuracy: "
-			+ FlxMath.roundDecimal(accuracy, 2) + "%";
+		var displayAccuracy:String = (totalNotesPlayed == 0) ? "0" : Std.string(FlxMath.roundDecimal(accuracy, 2));
+
+		scoreTxt.text = "Score: " + FlxStringUtil.formatMoney(songScore, false, true) + " • Misses: " + songMisses + " • Accuracy: " + displayAccuracy + "%"
+			+ " -" + " (" + getRatingFC() + ")";
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1962,6 +1965,24 @@ class PlayState extends MusicBeatState
 			keyShit();
 	}
 
+	private function getRatingFC():String
+	{
+		if (totalNotesPlayed == 0)
+			return "?";
+		if (accuracy >= 100)
+			return "S";
+		else if (accuracy >= 90)
+			return "A";
+		else if (accuracy >= 80)
+			return "B";
+		else if (accuracy >= 70)
+			return "C";
+		else if (accuracy >= 60)
+			return "D";
+		else
+			return "F";
+	}
+
 	function killCombo():Void
 	{
 		if (combo > 5 && gf.animOffsets.exists('sad'))
@@ -2069,7 +2090,6 @@ class PlayState extends MusicBeatState
 
 					FlxG.sound.play(Paths.sound('Lights_Shut_off'), function()
 					{
-						// no camFollow so it centers on horror tree
 						SONG = Song.loadFromJson(storyPlaylist[0].toLowerCase() + difficulty, storyPlaylist[0]);
 						LoadingState.loadAndSwitchState(new PlayState());
 					});
@@ -2086,16 +2106,13 @@ class PlayState extends MusicBeatState
 		else
 		{
 			trace('WENT BACK TO FREEPLAY??');
-			// unloadAssets();
 			FlxG.switchState(new FreeplayState());
 		}
 	}
 
-	// gives score and pops up rating
 	private function popUpScore(strumtime:Float, daNote:Note):Void
 	{
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
-		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
 
 		var rating:FlxSprite = new FlxSprite();
@@ -2105,24 +2122,26 @@ class PlayState extends MusicBeatState
 
 		var isSick:Bool = true;
 
-		if (noteDiff > Conductor.safeZoneOffset * 0.9)
+		if (noteDiff > 135)
 		{
 			daRating = 'shit';
 			score = 50;
-			isSick = false; // shitty copypaste on this literally just because im lazy and tired lol!
+			isSick = false;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
+		else if (noteDiff > 90)
 		{
 			daRating = 'bad';
 			score = 100;
 			isSick = false;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.2)
+		else if (noteDiff > 45)
 		{
 			daRating = 'good';
 			score = 200;
 			isSick = false;
 		}
+
+		// psych engine ahh hitboxes
 
 		switch (daRating)
 		{
@@ -2337,7 +2356,6 @@ class PlayState extends MusicBeatState
 
 	private function keyShit():Void
 	{
-		// control arrays, order L D R U
 		var holdArray:Array<Bool> = [controls.NOTE_LEFT, controls.NOTE_DOWN, controls.NOTE_UP, controls.NOTE_RIGHT];
 		var pressArray:Array<Bool> = [
 			controls.NOTE_LEFT_P,
@@ -2352,8 +2370,7 @@ class PlayState extends MusicBeatState
 			controls.NOTE_RIGHT_R
 		];
 
-		// HOLDS, check for sustain notes
-		if (holdArray.contains(true) && /*!boyfriend.stunned && */ generatedMusic)
+		if (holdArray.contains(true) && generatedMusic)
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
@@ -2362,14 +2379,13 @@ class PlayState extends MusicBeatState
 			});
 		}
 
-		// PRESSES, check for note hits
-		if (pressArray.contains(true) && /*!boyfriend.stunned && */ generatedMusic)
+		if (pressArray.contains(true) && generatedMusic)
 		{
 			boyfriend.holdTimer = 0;
 
-			var possibleNotes:Array<Note> = []; // notes that can be hit
-			var directionList:Array<Int> = []; // directions that can be hit
-			var dumbNotes:Array<Note> = []; // notes to kill later
+			var possibleNotes:Array<Note> = [];
+			var directionList:Array<Int> = [];
+			var dumbNotes:Array<Note> = [];
 
 			notes.forEachAlive(function(daNote:Note)
 			{
@@ -2380,13 +2396,12 @@ class PlayState extends MusicBeatState
 						for (coolNote in possibleNotes)
 						{
 							if (coolNote.noteData == daNote.noteData && Math.abs(daNote.strumTime - coolNote.strumTime) < 10)
-							{ // if it's the same note twice at < 10ms distance, just delete it
-								// EXCEPT u cant delete it in this loop cuz it fucks with the collection lol
+							{
 								dumbNotes.push(daNote);
 								break;
 							}
 							else if (coolNote.noteData == daNote.noteData && daNote.strumTime < coolNote.strumTime)
-							{ // if daNote is earlier than existing note (coolNote), replace
+							{
 								possibleNotes.remove(coolNote);
 								possibleNotes.push(daNote);
 								break;
@@ -2416,7 +2431,7 @@ class PlayState extends MusicBeatState
 			else if (possibleNotes.length > 0)
 			{
 				for (shit in 0...pressArray.length)
-				{ // if a direction is hit that shouldn't be
+				{
 					if (pressArray[shit] && !directionList.contains(shit))
 						noteMiss(shit);
 				}

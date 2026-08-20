@@ -29,6 +29,7 @@ class FreeplayState extends MusicBeatState
 	var listenText:FlxText;
 	var lerpScore:Float = 0;
 	var intendedScore:Int = 0;
+	var playingSong:Bool = false;
 
 	var coolColors:Array<Int> = [
 		0xff9271fd,
@@ -205,13 +206,32 @@ class FreeplayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.TAB)
 		{
-			var songTitle:String = songs[curSelected].songName;
-			FlxG.sound.playMusic(Paths.inst(songTitle), 0.7);
-			listenText.text = "PLAYING: " + songTitle.toUpperCase();
+			if (!playingSong)
+			{
+				var songTitle:String = songs[curSelected].songName;
+				var currentDiff:String = CoolUtil.difficultyString().toLowerCase();
+
+				if (currentDiff == 'erect' || currentDiff == 'nightmare')
+				{
+					songTitle += "-erect";
+				}
+
+				FlxG.sound.playMusic(Paths.inst(songTitle), 0.7);
+				listenText.text = "STOP: TAB";
+				playingSong = true;
+			}
+			else
+			{
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				listenText.text = "PRESS TAB TO LISTEN";
+				playingSong = false;
+			}
 		}
 
 		if (accepted)
 		{
+			FlxG.sound.play(Paths.sound('confirmMenu'));
+
 			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
@@ -219,7 +239,18 @@ class FreeplayState extends MusicBeatState
 
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
-			LoadingState.loadAndSwitchState(new PlayState());
+
+			if (FlxG.sound.music != null)
+			{
+				FlxG.sound.music.fadeOut(0.75, 0, function(twn:FlxTween)
+				{
+					LoadingState.loadAndSwitchState(new PlayState());
+				});
+			}
+			else
+			{
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
 		}
 	}
 
@@ -278,7 +309,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		if (listenText != null)
-			listenText.text = "PRESS TAB TO LISTEN";
+			listenText.text = playingSong ? "STOP: TAB" : "PRESS TAB TO LISTEN";
 	}
 
 	function positionHighscore()

@@ -25,7 +25,7 @@ class PerformanceCounter extends Sprite
 		text = new TextField();
 		text.width = 175;
 		text.height = 25;
-		text.x = 2;
+		text.x = 3;
 		text.y = 3;
 		text.selectable = false;
 		text.mouseEnabled = false;
@@ -43,10 +43,11 @@ class PerformanceCounter extends Sprite
 		var background:Shape = new Shape();
 
 		background.graphics.beginFill(0x7C7A7A, 0.65);
-		background.graphics.drawRect(0, 0, 155, 25);
+		background.graphics.drawRoundRect(0, 0, 155, 25, 8, 8);
 		background.graphics.endFill();
+
 		background.graphics.lineStyle(1, 0xFFFFFF, 0.5);
-		background.graphics.drawRect(0, 0, 155, 25);
+		background.graphics.drawRoundRect(0, 0, 155, 25, 8, 8);
 
 		addChild(background);
 		addChild(text);

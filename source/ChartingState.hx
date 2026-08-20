@@ -31,6 +31,9 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+#if sys
+import sys.io.File;
+#end
 
 using StringTools;
 
@@ -1061,15 +1064,44 @@ class ChartingState extends MusicBeatState
 			"song": _song
 		};
 
-		var data:String = Json.stringify(json);
+		var data:String = Json.stringify(json, "\t");
 
 		if ((data != null) && (data.length > 0))
 		{
+			// Suffix basierend auf der aktuellen Difficulty bestimmen
+			var suffix:String = "";
+			switch (PlayState.storyDifficulty)
+			{
+				case 0:
+					suffix = "-easy";
+				case 2:
+					suffix = "-hard";
+					// case 1 ist Normal (kein Suffix)
+			}
+
+			var fileName:String = _song.song.toLowerCase() + suffix + ".json";
+
+			#if sys
+			// Direkt im Pfad assets/data/SONGNAME/SONGNAME-DIFFICULTY.json speichern
+			var path:String = "assets/data/" + _song.song.toLowerCase() + "/" + fileName;
+
+			try
+			{
+				File.saveContent(path, data.trim());
+				FlxG.log.notice("Erfolgreich gespeichert unter: " + path);
+			}
+			catch (e:Dynamic)
+			{
+				FlxG.log.error("Fehler beim Speichern: " + e);
+			}
+			#else
+			// Fallback für Browser / HTML5
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+			_file.save(data.trim(), fileName);
+			#end
 		}
 	}
 

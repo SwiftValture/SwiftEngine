@@ -3,10 +3,6 @@ package;
 import Song.SwagSong;
 import flixel.FlxG;
 
-/**
- * ...
- * @author
- */
 typedef BPMChangeEvent =
 {
 	var stepTime:Int;
@@ -17,14 +13,14 @@ typedef BPMChangeEvent =
 class Conductor
 {
 	public static var bpm:Float = 100;
-	public static var crochet:Float = ((60 / bpm) * 1000); // beats in milliseconds
-	public static var stepCrochet:Float = crochet / 4; // steps in milliseconds
+	public static var crochet:Float = ((60 / bpm) * 1000);
+	public static var stepCrochet:Float = crochet / 4;
 	public static var songPosition:Float;
 	public static var lastSongPos:Float;
 	public static var offset:Float = 0;
 
 	public static var safeFrames:Int = 10;
-	public static var safeZoneOffset:Float = (safeFrames / 60) * 1000; // is calculated in create(), is safeFrames in milliseconds
+	public static var safeZoneOffset:Float = (safeFrames / 60) * 1000;
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
@@ -33,10 +29,6 @@ class Conductor
 	public static var songPositionDelta:Float = 0;
 	private static var prevTime:Float = 0;
 
-	/**
-	 * Gibt die präzise Song-Position inklusive Frame-Delta zurück.
-	 * Nutze DIESE Funktion für dein Noten-Movement!
-	 */
 	public static function getTimeWithDelta():Float
 	{
 		return songPosition + songPositionDelta;
