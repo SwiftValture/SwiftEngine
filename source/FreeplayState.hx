@@ -20,7 +20,6 @@ class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
 
-	// var selector:FlxText;
 	var curSelected:Int = 0;
 	var curDifficulty:Int = 1;
 
@@ -51,9 +50,8 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		#if discord_rpc
-		DiscordClient.changePresence("In the Menus", null);
-		#end
+		persistentUpdate = true;
+		persistentDraw = true;
 
 		var isDebug:Bool = false;
 
@@ -137,8 +135,6 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
-
 		super.create();
 	}
 
@@ -191,7 +187,7 @@ class FreeplayState extends MusicBeatState
 			changeSelection(1);
 
 		if (FlxG.mouse.wheel != 0)
-			changeSelection(-Math.round(FlxG.mouse.wheel / 4));
+			changeSelection(-FlxG.mouse.wheel);
 
 		if (controls.UI_LEFT_P)
 			changeDiff(-1);
@@ -214,6 +210,10 @@ class FreeplayState extends MusicBeatState
 				if (currentDiff == 'erect' || currentDiff == 'nightmare')
 				{
 					songTitle += "-erect";
+				}
+				else if (curDifficulty == 5)
+				{
+					songTitle += "-unreleased";
 				}
 
 				FlxG.sound.playMusic(Paths.inst(songTitle), 0.7);
@@ -240,6 +240,11 @@ class FreeplayState extends MusicBeatState
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
 
+			if (bg != null)
+			{
+				FlxTween.tween(bg, {alpha: 0}, 1);
+			}
+
 			if (FlxG.sound.music != null)
 			{
 				FlxG.sound.music.fadeOut(0.75, 0, function(twn:FlxTween)
@@ -258,23 +263,34 @@ class FreeplayState extends MusicBeatState
 	{
 		curDifficulty += change;
 
+		var isUgh:Bool = (songs[curSelected].songName.toLowerCase() == 'ugh');
+		var maxDiff:Int = isUgh ? 5 : 4;
+
 		if (curDifficulty < 0)
-			curDifficulty = 4;
-		if (curDifficulty > 4)
+			curDifficulty = maxDiff;
+		if (curDifficulty > maxDiff)
 			curDifficulty = 0;
 
+		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		#end
 
 		PlayState.storyDifficulty = curDifficulty;
 
-		diffText.text = "< " + CoolUtil.difficultyString() + " >";
+		if (curDifficulty == 5)
+		{
+			diffText.text = "< UNRELEASED >";
+		}
+		else
+		{
+			diffText.text = "< " + CoolUtil.difficultyString() + " >";
+		}
+
 		positionHighscore();
 	}
 
 	function changeSelection(change:Int = 0)
 	{
-		NGio.logEvent('Fresh');
-
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
@@ -284,7 +300,14 @@ class FreeplayState extends MusicBeatState
 		if (curSelected >= songs.length)
 			curSelected = 0;
 
+		if (songs[curSelected].songName.toLowerCase() != 'ugh' && curDifficulty > 4)
+		{
+			curDifficulty = 1;
+		}
+
+		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		#end
 
 		var bullShit:Int = 0;
 

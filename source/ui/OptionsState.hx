@@ -7,8 +7,6 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup;
 import flixel.util.FlxSignal;
 
-// typedef OptionsState = OptionsMenu_old;
-// class OptionsState_new extends MusicBeatState
 class OptionsState extends MusicBeatState
 {
 	var pages = new Map<PageName, Page>();
@@ -31,7 +29,6 @@ class OptionsState extends MusicBeatState
 		var options = addPage(Options, new OptionsMenu(false));
 		var preferences = addPage(Preferences, new PreferencesMenu());
 		var controls = addPage(Controls, new ControlsMenu());
-		// var colors = addPage(Colors, new ColorsMenu());
 
 		#if cpp
 		var mods = addPage(Mods, new ModMenu());
@@ -41,7 +38,6 @@ class OptionsState extends MusicBeatState
 		{
 			options.onExit.add(exitToMainMenu);
 			controls.onExit.add(switchPage.bind(Options));
-			// colors.onExit.add(switchPage.bind(Options));
 			preferences.onExit.add(switchPage.bind(Options));
 
 			#if cpp
@@ -50,12 +46,10 @@ class OptionsState extends MusicBeatState
 		}
 		else
 		{
-			// No need to show Options page
 			controls.onExit.add(exitToMainMenu);
 			setPage(Controls);
 		}
 
-		// disable for intro transition
 		currentPage.enabled = false;
 		super.create();
 	}
@@ -182,7 +176,7 @@ class OptionsMenu extends Page
 		createItem("controls", function() switchPage(Controls));
 		// createItem('colors', function() switchPage(Colors));
 		#if cpp
-		//createItem('mods', function() switchPage(Mods));
+		// createItem('mods', function() switchPage(Mods));
 		#end
 
 		#if CAN_OPEN_LINKS

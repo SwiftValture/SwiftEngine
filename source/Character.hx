@@ -19,6 +19,7 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'bf';
 
 	public var holdTimer:Float = 0;
+	public var holdTime:Float = 6.1;
 
 	public var animationNotes:Array<Dynamic> = [];
 
@@ -55,6 +56,8 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
+				holdTime = 6.1;
+
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas');
 				frames = tex;
@@ -73,6 +76,9 @@ class Character extends FlxSprite
 				loadOffsetFile(curCharacter);
 
 				playAnim('danceRight');
+
+				holdTime = 6.1;
+
 			case 'gf-tankmen':
 				frames = Paths.getSparrowAtlas('characters/gfTankmen');
 				animation.addByIndices('sad', 'GF Crying at Gunpoint', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, true);
@@ -81,6 +87,8 @@ class Character extends FlxSprite
 
 				loadOffsetFile('gf');
 				playAnim('danceRight');
+
+				holdTime = 6.1;
 
 			case 'bf-holding-gf':
 				frames = Paths.getSparrowAtlas('characters/bfAndGF');
@@ -102,6 +110,8 @@ class Character extends FlxSprite
 
 				flipX = true;
 
+				holdTime = 6.1;
+
 			case 'gf-car':
 				tex = Paths.getSparrowAtlas('characters/gfCar');
 				frames = tex;
@@ -114,6 +124,8 @@ class Character extends FlxSprite
 				loadOffsetFile(curCharacter);
 
 				playAnim('danceRight');
+
+				holdTime = 6.1;
 
 			case 'gf-pixel':
 				tex = Paths.getSparrowAtlas('characters/gfPixel');
@@ -130,6 +142,8 @@ class Character extends FlxSprite
 				updateHitbox();
 				antialiasing = false;
 
+				holdTime = 6.1;
+
 			case 'dad':
 				// DAD ANIMATION LOADING CODE
 				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
@@ -143,6 +157,9 @@ class Character extends FlxSprite
 				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
+
+				holdTime = 6.1;
+
 			case 'spooky':
 				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets');
 				frames = tex;
@@ -156,6 +173,9 @@ class Character extends FlxSprite
 				loadOffsetFile(curCharacter);
 
 				playAnim('danceRight');
+
+				holdTime = 6.1;
+
 			case 'mom':
 				tex = Paths.getSparrowAtlas('characters/Mom_Assets');
 				frames = tex;
@@ -166,11 +186,14 @@ class Character extends FlxSprite
 				quickAnimAdd('singLEFT', 'Mom Left Pose');
 				// ANIMATION IS CALLED MOM LEFT POSE BUT ITS FOR THE RIGHT
 				// CUZ DAVE IS DUMB!
+				// man thats crazy
 				quickAnimAdd('singRIGHT', 'Mom Pose Left');
 
 				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
+
+				holdTime = 6.1;
 
 			case 'mom-car':
 				tex = Paths.getSparrowAtlas('characters/momCar');
@@ -188,6 +211,8 @@ class Character extends FlxSprite
 				loadOffsetFile(curCharacter);
 
 				playAnim('idle');
+
+				holdTime = 6.1;
 			case 'monster':
 				tex = Paths.getSparrowAtlas('characters/Monster_Assets');
 				frames = tex;
@@ -243,6 +268,8 @@ class Character extends FlxSprite
 
 				flipX = true;
 
+				holdTime = 6.1;
+
 			case 'pico-speaker':
 				frames = Paths.getSparrowAtlas('characters/picoSpeaker');
 
@@ -284,6 +311,8 @@ class Character extends FlxSprite
 				flipX = true;
 
 				loadOffsetFile(curCharacter);
+
+				holdTime = 6.1;
 
 			case 'bf-christmas':
 				var tex = Paths.getSparrowAtlas('characters/bfChristmas');
@@ -558,22 +587,15 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		if (!curCharacter.startsWith('bf'))
+		if (animation.curAnim.name.startsWith('sing'))
 		{
-			if (animation.curAnim.name.startsWith('sing'))
-			{
-				holdTimer += elapsed;
-			}
+			holdTimer += elapsed;
+		}
 
-			var dadVar:Float = 4;
-
-			if (curCharacter == 'dad')
-				dadVar = 6.1;
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
-			{
-				dance();
-				holdTimer = 0;
-			}
+		if (holdTimer >= Conductor.stepCrochet * holdTime * 0.001)
+		{
+			dance();
+			holdTimer = 0;
 		}
 
 		if (curCharacter.endsWith('-car'))

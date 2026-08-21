@@ -34,6 +34,17 @@ class Conductor
 		return songPosition + songPositionDelta;
 	}
 
+	public static function getStepTime(time:Float):Float
+	{
+    	return flixel.math.FlxMath.roundDecimal(time / stepCrochet, 6);
+	}
+
+public static var currentStep(get, never):Int;
+static function get_currentStep():Int
+{
+    return Math.floor(getStepTime(getTimeWithDelta()));
+}
+
 	public static function mapBPMChanges(song:SwagSong)
 	{
 		bpmChangeMap = [];
@@ -70,21 +81,22 @@ class Conductor
 	}
 
 	public static function update(elapsed:Float):Void
-	{
-		if (FlxG.sound.music != null && FlxG.sound.music.playing)
-		{
-			songPositionDelta += elapsed * 1000;
+{
+    if (FlxG.sound.music != null && FlxG.sound.music.playing)
+    {
+        var pitch:Float = FlxG.sound.music.pitch;
+        songPositionDelta += elapsed * 1000 * pitch;
 
-			if (prevTime != FlxG.sound.music.time)
-			{
-				songPosition = FlxG.sound.music.time + offset;
-				songPositionDelta %= (elapsed * 1000);
-				prevTime = FlxG.sound.music.time;
-			}
-		}
-		else
-		{
-			songPositionDelta = 0;
-		}
-	}
+        if (prevTime != FlxG.sound.music.time)
+        {
+            songPosition = FlxG.sound.music.time + offset;
+            songPositionDelta = 0;
+            prevTime = FlxG.sound.music.time;
+        }
+    }
+    else
+    {
+        songPositionDelta = 0;
+    }
+}
 }

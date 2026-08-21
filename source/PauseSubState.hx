@@ -33,9 +33,13 @@ class PauseSubState extends MusicBeatSubstate
 
 	var practiceText:FlxText;
 
-	public function new(x:Float, y:Float)
+	var playState:PlayState;
+
+	public function new(x:Float, y:Float, playState:PlayState)
 	{
 		super();
+
+		this.playState = playState;
 
 		menuItems = pauseOG;
 
@@ -146,6 +150,8 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
+					if (playState.trainSound != null && playState.trainMoving)
+						playState.trainSound.resume();
 					close();
 				case "EASY" | 'NORMAL' | "HARD":
 					PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song.toLowerCase(), curSelected), PlayState.SONG.song.toLowerCase());
@@ -209,12 +215,10 @@ class PauseSubState extends MusicBeatSubstate
 			bullShit++;
 
 			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
 	}

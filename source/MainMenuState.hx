@@ -111,6 +111,8 @@ class MainMenuState extends MusicBeatState
 			var menuItem = menuItems.members[i];
 			menuItem.x = FlxG.width / 2;
 			menuItem.y = top + spacing * i;
+			menuItem.scrollFactor.x = 0;
+			menuItem.scrollFactor.y = 0.4;
 		}
 
 		FlxG.cameras.reset(new SwagCamera());

@@ -33,6 +33,7 @@ import shaderslmfao.BuildingShaders.BuildingShader;
 import shaderslmfao.BuildingShaders;
 import shaderslmfao.ColorSwap;
 import ui.PreferencesMenu;
+import openfl.Lib;
 
 using StringTools;
 
@@ -66,15 +67,11 @@ class TitleState extends MusicBeatState
 
 	var video:Video;
 	var netStream:NetStream;
+	var window = Lib.application.window;
 	private var overlay:Sprite;
 
 	override public function create():Void
 	{
-		// #if polymod
-		// polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
-		// FlxG.bitmap.clearCache();
-		// #end
-
 		startedIntro = false;
 
 		FlxG.game.focusLostFramerate = 60;
@@ -101,10 +98,6 @@ class TitleState extends MusicBeatState
 
 		if (FlxG.save.data.weekUnlocked != null)
 		{
-			// FIX LATER!!!
-			// WEEK UNLOCK PROGRESSION!!
-			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
 			if (StoryMenuState.weekUnlocked.length < 4)
 				StoryMenuState.weekUnlocked.insert(0, true);
 
@@ -124,37 +117,6 @@ class TitleState extends MusicBeatState
 		FlxG.switchState(new CutsceneAnimTestState());
 		#elseif CHARTING
 		FlxG.switchState(new ChartingState());
-		/* 
-			#elseif web
-
-
-			if (!initialized)
-			{
-
-				video = new Video();
-				FlxG.stage.addChild(video);
-
-				var netConnection = new NetConnection();
-				netConnection.connect(null);
-
-				netStream = new NetStream(netConnection);
-				netStream.client = {onMetaData: client_onMetaData};
-				netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, netStream_onAsyncError);
-				netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnection_onNetStatus);
-				// netStream.addEventListener(NetStatusEvent.NET_STATUS) // netStream.play(Paths.file('music/kickstarterTrailer.mp4'));
-
-				overlay = new Sprite();
-				overlay.graphics.beginFill(0, 0.5);
-				overlay.graphics.drawRect(0, 0, 1280, 720);
-				overlay.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
-
-				overlay.buttonMode = true;
-				// FlxG.stage.addChild(overlay);
-
-			}
-		 */
-
-		// netConnection.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
 		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
@@ -238,9 +200,6 @@ class TitleState extends MusicBeatState
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		// bg.antialiasing = true;
-		// bg.setGraphicSize(Std.int(bg.width * 0.6));
-		// bg.updateHitbox();
 
 		add(bg);
 
@@ -253,11 +212,6 @@ class TitleState extends MusicBeatState
 		logoBl.updateHitbox();
 
 		logoBl.shader = swagShader.shader;
-		// logoBl.shader = alphaShader.shader;
-
-		// trace();
-		// logoBl.screenCenter();
-		// logoBl.color = FlxColor.BLACK;
 
 		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
@@ -277,16 +231,12 @@ class TitleState extends MusicBeatState
 		titleText.antialiasing = true;
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
-		// titleText.screenCenter(X);
 		add(titleText);
 
 		var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
 		logo.screenCenter();
 		logo.antialiasing = true;
 		// add(logo);
-
-		// FlxTween.tween(logoBl, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG});
-		// FlxTween.tween(logo, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG, startDelay: 0.1});
 
 		credGroup = new FlxGroup();
 		add(credGroup);
@@ -295,14 +245,8 @@ class TitleState extends MusicBeatState
 		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		credGroup.add(blackScreen);
 
-		// var atlasBullShit:FlxSprite = new FlxSprite();
-		// atlasBullShit.frames = CoolUtil.fromAnimate(Paths.image('money'), Paths.file('images/money.json'));
-		// credGroup.add(atlasBullShit);
-
 		credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er", true);
 		credTextShit.screenCenter();
-
-		// credTextShit.alignment = CENTER;
 
 		credTextShit.visible = false;
 
@@ -323,11 +267,7 @@ class TitleState extends MusicBeatState
 		else
 			initialized = true;
 
-		if (FlxG.sound.music != null)
-			FlxG.sound.music.onComplete = function() FlxG.switchState(new VideoState());
-
 		startedIntro = true;
-		// credGroup.add(credTextShit);
 	}
 
 	function getIntroTextShit():Array<Array<String>>
@@ -349,25 +289,15 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		#if debug
-		if (FlxG.keys.justPressed.EIGHT)
-			FlxG.switchState(new CutsceneAnimTestState());
-		#end
-
-		/* 
-			if (FlxG.keys.justPressed.R)
-			{
-				#if polymod
-				polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
-				trace('reinitialized');
-				#end
-			}
-
-		 */
+		if (FlxG.keys.justPressed.Y)
+		{
+			FlxTween.cancelTweensOf(window, ["x", "y"]);
+			FlxTween.tween(window, {x: window.x + 300}, 1.4, {ease: FlxEase.quadInOut, type: FlxTweenType.PINGPONG, startDelay: 0.35});
+			FlxTween.tween(window, {y: window.y + 100}, 0.7, {ease: FlxEase.quadInOut, type: FlxTweenType.PINGPONG});
+		}
 
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
-		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
 		if (FlxG.keys.justPressed.F)
 			FlxG.fullscreen = !FlxG.fullscreen;

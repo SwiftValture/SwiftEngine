@@ -32,10 +32,13 @@ class PreferencesMenu extends ui.OptionsState.Page
 
 		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
+		createPrefItem('ghost Tapping', 'ghost Tapping', false);
 		createPrefItem('flashing menu', 'flashing-menu', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
 		createPrefItem('Auto Pause', 'auto-pause', false);
+		createPrefItem('Test Modchart', 'Test Modchart', false);
+		createPrefItem('botplay', 'botplay', false);
 
 		camFollow = new FlxObject(FlxG.width / 2, 0, 140, 70);
 		if (items != null)
@@ -72,11 +75,14 @@ class PreferencesMenu extends ui.OptionsState.Page
 
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
+		preferenceCheck('ghost Tapping', false);
 		preferenceCheck('flashing-menu', true);
 		preferenceCheck('camera-zoom', true);
 		preferenceCheck('fps-counter', true);
 		preferenceCheck('auto-pause', false);
 		preferenceCheck('master-volume', 1);
+		preferenceCheck('Test Modchart', false);
+		preferenceCheck('botplay', false);
 
 		#if muted
 		setPref('master-volume', 0);
@@ -84,8 +90,8 @@ class PreferencesMenu extends ui.OptionsState.Page
 		#end
 
 		Main.fpsCounter.visible = getPref('fps-counter');
-		//if (!getPref('fps-counter'))
-			//FlxG.stage.removeChild(Main.fpsCounter);
+		// if (!getPref('fps-counter'))
+		// FlxG.stage.removeChild(Main.fpsCounter);
 
 		FlxG.autoPause = getPref('auto-pause');
 	}
@@ -139,7 +145,7 @@ class PreferencesMenu extends ui.OptionsState.Page
 		switch (prefName)
 		{
 			case 'fps-counter':
-				Main.fpsCounter.visible = getPref('fps-counter');//FlxG.stage.removeChild(Main.fpsCounter);
+				Main.fpsCounter.visible = getPref('fps-counter'); // FlxG.stage.removeChild(Main.fpsCounter);
 			case 'auto-pause':
 				FlxG.autoPause = getPref('auto-pause');
 		}

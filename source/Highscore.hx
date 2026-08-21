@@ -74,6 +74,8 @@ class Highscore
 			daSong += '-erect';
 		else if (diff == 4)
 			daSong += '-nightmare';
+		else if (diff == 5)
+			daSong += '-unreleased';
 
 		return daSong;
 	}

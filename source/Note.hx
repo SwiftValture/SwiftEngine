@@ -202,6 +202,9 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 
+		// Erstelle eine lokale Variable für die geglättete Song-Position
+		var songPos:Float = Conductor.getTimeWithDelta();
+
 		if (mustPress)
 		{
 			// miss on the NEXT frame so lag doesnt make u miss notes
@@ -212,9 +215,9 @@ class Note extends FlxSprite
 			}
 			else
 			{
-				if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset)
+				if (strumTime > songPos - Conductor.safeZoneOffset)
 				{ // The * 0.5 is so that it's easier to hit them too late, instead of too early
-					if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
+					if (strumTime < songPos + (Conductor.safeZoneOffset * 0.5))
 						canBeHit = true;
 				}
 				else
@@ -228,7 +231,7 @@ class Note extends FlxSprite
 		{
 			canBeHit = false;
 
-			if (strumTime <= Conductor.songPosition)
+			if (strumTime <= songPos)
 				wasGoodHit = true;
 		}
 

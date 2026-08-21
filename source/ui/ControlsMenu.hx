@@ -78,7 +78,7 @@ class ControlsMenu extends ui.OptionsState.Page
 
 		// FlxG.debugger.drawDebug = true;
 		var y = deviceList == null ? 30 : 120;
-		var spacer = 70;
+		var spacer = 80;
 		var currentHeader:String = null;
 		// list order is determined by enum order
 		for (i in 0...controlList.length)
