@@ -118,7 +118,12 @@ class MainMenuState extends MusicBeatState
 		FlxG.cameras.reset(new SwagCamera());
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "SwiftEngine version: " + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height
+			- 18, 0,
+			"SwiftEngine version: "
+			+ Application.current.meta.get('version')
+			+ " | Commit: "
+			+ GitCommit.hash, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
