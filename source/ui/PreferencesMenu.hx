@@ -39,6 +39,8 @@ class PreferencesMenu extends ui.OptionsState.Page
 		createPrefItem('Auto Pause', 'auto-pause', false);
 		createPrefItem('Test Modchart', 'Test Modchart', false);
 		createPrefItem('botplay', 'botplay', false);
+		createPrefItem('hitsounds', 'hitsounds', false);
+		createPrefItem('camMovement', 'camMovement', false);
 
 		camFollow = new FlxObject(FlxG.width / 2, 0, 140, 70);
 		if (items != null)
@@ -83,6 +85,8 @@ class PreferencesMenu extends ui.OptionsState.Page
 		preferenceCheck('master-volume', 1);
 		preferenceCheck('Test Modchart', false);
 		preferenceCheck('botplay', false);
+		preferenceCheck('hitsounds', false);
+		preferenceCheck('camMovement', false);
 
 		#if muted
 		setPref('master-volume', 0);

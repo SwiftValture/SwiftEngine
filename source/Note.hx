@@ -33,6 +33,7 @@ class Note extends FlxSprite
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var extraSustain:Bool = false;
 
 	public var colorSwap:ColorSwap;
 	public var noteScore:Float = 1;
@@ -146,6 +147,9 @@ class Note extends FlxSprite
 
 		if (isSustainNote && prevNote != null)
 		{
+			if (extraSustain)
+				alpha = 0;
+
 			noteScore * 0.2;
 			alpha = 0.6;
 
@@ -167,11 +171,13 @@ class Note extends FlxSprite
 			}
 
 			updateHitbox();
-
+			offset.y -= 6.25;
 			x -= width / 2;
 
 			if (PlayState.curStage.startsWith('school'))
+			{
 				x += 30;
+			}
 
 			if (prevNote.isSustainNote)
 			{
@@ -202,12 +208,10 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 
-		// Erstelle eine lokale Variable für die geglättete Song-Position
 		var songPos:Float = Conductor.getTimeWithDelta();
 
 		if (mustPress)
 		{
-			// miss on the NEXT frame so lag doesnt make u miss notes
 			if (willMiss && !wasGoodHit)
 			{
 				tooLate = true;

@@ -1,14 +1,13 @@
 package;
 
 import flixel.FlxSprite;
+import openfl.utils.Assets as OpenFlAssets;
+import openfl.utils.AssetType;
 
 using StringTools;
 
 class HealthIcon extends FlxSprite
 {
-	/**
-	 * Used for FreeplayState! If you use it elsewhere, prob gonna annoying
-	 */
 	public var sprTracker:FlxSprite;
 
 	var char:String = '';
@@ -46,6 +45,11 @@ class HealthIcon extends FlxSprite
 		{
 			if (animation.getByName(newChar) == null)
 			{
+				var iconPath:String = Paths.image('icons/icon-' + newChar);
+
+				if (!OpenFlAssets.exists(iconPath, IMAGE))
+					newChar = 'bf-old';
+
 				loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
 				animation.add(newChar, [0, 1], 0, false, isPlayer);
 			}

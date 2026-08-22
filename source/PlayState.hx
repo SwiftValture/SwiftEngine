@@ -94,6 +94,8 @@ class PlayState extends MusicBeatState
 
 	private var healthBarBG:FlxSprite;
 	private var healthBar:FlxBar;
+	var lerpHealth:Float = 1;
+	var startLerpHealth:Bool = false;
 
 	private var generatedMusic:Bool = false;
 	private var startingSong:Bool = false;
@@ -162,19 +164,10 @@ class PlayState extends MusicBeatState
 	var useErectShaders:Bool = false;
 	var colorShader:AdjustColorShader;
 
-	#if discord_rpc
-	// Discord RPC variables
-	var storyDifficultyText:String = "";
-	var iconRPC:String = "";
-	var songLength:Float = 0;
-	var detailsText:String = "";
-	var detailsPausedText:String = "";
-	#end
-
 	var camPos:FlxPoint;
 	var lightFadeShader:BuildingShaders;
 
-	// MODCHART TEST STUFFF
+	// MODCHART STUFFFS
 	private var strumBaseX:Array<Float> = [];
 	private var strumBaseY:Array<Float> = [];
 	private var strumBaseAngle:Array<Float> = [];
@@ -184,7 +177,7 @@ class PlayState extends MusicBeatState
 	{
 		FlxG.sound.cache(Paths.sound('scrollMenu'));
 		FlxG.sound.cache(Paths.music('breakfast'));
-
+		FlxG.sound.cache(Paths.sound('hitSound')); // ich hab es von codename engine gestohlen lol. ich werde es spaeter ersetzen
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
@@ -235,10 +228,6 @@ class PlayState extends MusicBeatState
 			case 'thorns':
 				dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
 		}
-
-		#if discord_rpc
-		initDiscord();
-		#end
 
 		switch (SONG.song.toLowerCase())
 		{
@@ -847,6 +836,7 @@ class PlayState extends MusicBeatState
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		healthBar.numDivisions = 1000;
 		add(healthBar);
 
 		scoreTxt = new FlxText(0, healthBarBG.y + 36, FlxG.width, "", 16);
@@ -1006,29 +996,6 @@ class PlayState extends MusicBeatState
 		};
 	}
 
-	function initDiscord():Void
-	{
-		#if discord_rpc
-		storyDifficultyText = difficultyString();
-		iconRPC = SONG.player2;
-
-		switch (iconRPC)
-		{
-			case 'senpai-angry':
-				iconRPC = 'senpai';
-			case 'monster-christmas':
-				iconRPC = 'monster';
-			case 'mom-car':
-				iconRPC = 'mom';
-		}
-
-		detailsText = isStoryMode ? "Story Mode: Week " + storyWeek : "Freeplay";
-		detailsPausedText = "Paused - " + detailsText;
-
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
-		#end
-	}
-
 	function schoolIntro(?dialogueBox:DialogueBox):Void
 	{
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
@@ -1138,7 +1105,7 @@ class PlayState extends MusicBeatState
 			{
 				var anim = gf.animation.curAnim;
 
-				if (anim.name != 'cheer' && anim.name != 'sad' || anim.finished)
+				if ((anim.name != 'cheer' && anim.name != 'sad') || anim.finished)
 				{
 					gf.dance();
 				}
@@ -1226,6 +1193,8 @@ class PlayState extends MusicBeatState
 			playerVocals.play();
 
 		resyncVocals();
+
+		startLerpHealth = true;
 	}
 
 	private function generateSong():Void
@@ -1304,7 +1273,14 @@ class PlayState extends MusicBeatState
 
 				var susLength:Float = swagNote.sustainLength;
 
-				susLength = susLength / Conductor.stepCrochet;
+				if (susLength > 0)
+				{
+					swagNote.sustainLength += Conductor.stepCrochet;
+					susLength = swagNote.sustainLength;
+				}
+
+				susLength /= Conductor.stepCrochet;
+
 				unspawnNotes.push(swagNote);
 
 				for (susNote in 0...Math.floor(susLength))
@@ -1312,6 +1288,10 @@ class PlayState extends MusicBeatState
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
+
+					if (susNote == Math.floor(susLength) - 2)
+						sustainNote.extraSustain = true;
+
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
 
@@ -1505,29 +1485,6 @@ class PlayState extends MusicBeatState
 		super.closeSubState();
 	}
 
-	#if discord_rpc
-	override public function onFocus():Void
-	{
-		if (health > 0 && !paused && FlxG.autoPause)
-		{
-			if (Conductor.songPosition > 0.0)
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
-			else
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
-		}
-
-		super.onFocus();
-	}
-
-	override public function onFocusLost():Void
-	{
-		if (health > 0 && !paused && FlxG.autoPause)
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
-
-		super.onFocusLost();
-	}
-	#end
-
 	function resyncVocals():Void
 	{
 		if (_exiting)
@@ -1551,6 +1508,12 @@ class PlayState extends MusicBeatState
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
+
+	public var offsetSing = 40;
+
+	public var isScroll = true;
+
+	public var isForcedCam = false;
 
 	override public function update(elapsed:Float)
 	{
@@ -1645,6 +1608,43 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		lerpHealth = CoolUtil.fpsLerp(lerpHealth, (health * 50), 0.15);
+
+		if (startLerpHealth)
+			healthBar.percent = lerpHealth;
+
+		if (PreferencesMenu.getPref('camMovement'))
+		{
+			var anim:String = '';
+
+			if (!cameraRightSide && dad != null)
+			{
+				anim = dad.animation.curAnim.name;
+			}
+			else if (cameraRightSide && boyfriend != null)
+			{
+				anim = boyfriend.animation.curAnim.name;
+			}
+
+			switch (anim)
+			{
+				case "singLEFT":
+					doScrollStuff(-offsetSing, 0, 0);
+
+				case "singDOWN":
+					doScrollStuff(0, offsetSing, 0);
+
+				case "singUP":
+					doScrollStuff(0, -offsetSing, 0);
+
+				case "singRIGHT":
+					doScrollStuff(offsetSing, 0, 0);
+
+				case "idle", "singLEFTmiss", "singDOWNmiss", "singUPmiss", "singRIGHTmiss":
+					doScrollStuff(0, 0, 0);
+			}
+		}
 
 		for (i in 0...4)
 		{
@@ -1816,18 +1816,11 @@ class PlayState extends MusicBeatState
 				playerVocals.stop();
 				FlxG.sound.music.stop();
 
-				// unloadAssets();
-
 				deathCounter += 1;
 
 				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
 				// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-
-				#if discord_rpc
-				// Game Over doesn't get his own variable because it's only used here
-				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
-				#end
 			}
 		}
 
@@ -1856,11 +1849,26 @@ class PlayState extends MusicBeatState
 					daNote.active = true;
 				}
 
-				var strumLineMid = strumLine.y + Note.swagWidth / 2;
+				var strumIndex = daNote.noteData + (daNote.mustPress ? 4 : 0);
+				var strum = strumLineNotes.members[strumIndex];
+
+				var noteStrumY = strumLine.y;
+
+				if (strum != null)
+				{
+					daNote.x = strum.x;
+
+					if (daNote.isSustainNote)
+						daNote.x += 36;
+
+					noteStrumY = strum.y;
+				}
+
+				var strumLineMid = noteStrumY + Note.swagWidth / 2;
 
 				if (PreferencesMenu.getPref('downscroll'))
 				{
-					daNote.y = (strumLine.y + (Conductor.getTimeWithDelta() - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
+					daNote.y = (noteStrumY + (Conductor.getTimeWithDelta() - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
 
 					if (daNote.isSustainNote)
 					{
@@ -1883,7 +1891,7 @@ class PlayState extends MusicBeatState
 				}
 				else
 				{
-					daNote.y = (strumLine.y - (Conductor.getTimeWithDelta() - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
+					daNote.y = (noteStrumY - (Conductor.getTimeWithDelta() - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
 
 					if (daNote.isSustainNote
 						&& (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit)))
@@ -2305,7 +2313,7 @@ class PlayState extends MusicBeatState
 			}
 			numScore.updateHitbox();
 
-			numScore.x = comboSpr.x - (43 * daLoop); //- 90;
+			numScore.x = comboSpr.x - (43 * daLoop);
 			numScore.acceleration.y = FlxG.random.int(200, 300);
 			numScore.velocity.y -= FlxG.random.int(140, 160);
 			numScore.velocity.x = FlxG.random.float(-5, 5);
@@ -2328,6 +2336,9 @@ class PlayState extends MusicBeatState
 
 	function cameraMovement()
 	{
+		if (isForcedCam)
+			return;
+
 		if (camFollow.x != dad.getMidpoint().x + 150 && !cameraRightSide)
 		{
 			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
@@ -2336,6 +2347,7 @@ class PlayState extends MusicBeatState
 			{
 				case 'mom':
 					camFollow.y = dad.getMidpoint().y;
+
 				case 'senpai' | 'senpai-angry':
 					camFollow.y = dad.getMidpoint().y - 430;
 					camFollow.x = dad.getMidpoint().x - 100;
@@ -2356,8 +2368,10 @@ class PlayState extends MusicBeatState
 			{
 				case 'limo':
 					camFollow.x = boyfriend.getMidpoint().x - 300;
+
 				case 'mall':
 					camFollow.y = boyfriend.getMidpoint().y - 200;
+
 				case 'school' | 'schoolEvil':
 					camFollow.x = boyfriend.getMidpoint().x - 200;
 					camFollow.y = boyfriend.getMidpoint().y - 200;
@@ -2366,6 +2380,12 @@ class PlayState extends MusicBeatState
 			if (SONG.song.toLowerCase() == 'tutorial')
 				FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
 		}
+	}
+
+	function doScrollStuff(x, y, angle)
+	{
+		FlxG.camera.targetOffset.set(x, y);
+		FlxG.camera.angle = FlxMath.lerp(FlxG.camera.angle, angle, camera.followLerp * offsetSing / 30);
 	}
 
 	private function keyShit():Void
@@ -2564,6 +2584,11 @@ class PlayState extends MusicBeatState
 			{
 				combo += 1;
 				popUpScore(note.strumTime, note);
+
+				if (PreferencesMenu.getPref('hitsounds'))
+				{
+					FlxG.sound.play(Paths.sound('hitSound')); // von codename engine muss ich noch ersetzen
+				}
 			}
 
 			if (note.noteData >= 0)
@@ -2778,7 +2803,7 @@ class PlayState extends MusicBeatState
 		{
 			var anim = gf.animation.curAnim;
 
-			if (anim.name != 'cheer' && anim.name != 'sad' || anim.finished)
+			if ((anim.name != 'cheer' && anim.name != 'sad') || anim.finished)
 			{
 				gf.dance();
 			}
