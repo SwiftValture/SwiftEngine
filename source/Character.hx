@@ -56,7 +56,7 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
-				holdTime = 6.1;
+				holdTime = 4;
 
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas');
@@ -77,18 +77,18 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
-				holdTime = 6.1;
+				holdTime = 4;
 
 			case 'gf-tankmen':
 				frames = Paths.getSparrowAtlas('characters/gfTankmen');
-				animation.addByIndices('sad', 'GF Crying at Gunpoint', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, true);
+				animation.addByIndices('sad', 'GF Crying at Gunpoint', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF Dancing at Gunpoint', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 				animation.addByIndices('danceRight', 'GF Dancing at Gunpoint', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 
 				loadOffsetFile('gf');
 				playAnim('danceRight');
 
-				holdTime = 6.1;
+				holdTime = 4;
 
 			case 'bf-holding-gf':
 				frames = Paths.getSparrowAtlas('characters/bfAndGF');
@@ -125,7 +125,7 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
-				holdTime = 6.1;
+				holdTime = 4;
 
 			case 'gf-pixel':
 				tex = Paths.getSparrowAtlas('characters/gfPixel');
@@ -142,7 +142,7 @@ class Character extends FlxSprite
 				updateHitbox();
 				antialiasing = false;
 
-				holdTime = 6.1;
+				holdTime = 4;
 
 			case 'dad':
 				// DAD ANIMATION LOADING CODE

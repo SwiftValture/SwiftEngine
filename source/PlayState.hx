@@ -1482,6 +1482,8 @@ class PlayState extends MusicBeatState
 			paused = false;
 		}
 
+		FlxG.camera.followLerp = 0.04;
+
 		super.closeSubState();
 	}
 
@@ -1509,7 +1511,7 @@ class PlayState extends MusicBeatState
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
 
-	public var offsetSing = 40;
+	public var offsetSing = 22;
 
 	public var isScroll = true;
 
@@ -1614,6 +1616,11 @@ class PlayState extends MusicBeatState
 		if (startLerpHealth)
 			healthBar.percent = lerpHealth;
 
+		var iconOffset:Int = 26;
+
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(lerpHealth, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(lerpHealth, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+
 		if (PreferencesMenu.getPref('camMovement'))
 		{
 			var anim:String = '';
@@ -1681,6 +1688,7 @@ class PlayState extends MusicBeatState
 			{
 				var boyfriendPos = boyfriend.getScreenPosition();
 				var pauseSubState = new PauseSubState(boyfriendPos.x, boyfriendPos.y, this);
+				FlxG.camera.followLerp = 0;
 				openSubState(pauseSubState);
 				pauseSubState.camera = camHUD;
 				boyfriendPos.put();
@@ -1703,10 +1711,8 @@ class PlayState extends MusicBeatState
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
-		var iconOffset:Int = 26;
-
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		// iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		// iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		if (health > 2)
 			health = 2;
@@ -1968,8 +1974,16 @@ class PlayState extends MusicBeatState
 					if (daNote.tooLate)
 					{
 						health -= 0.0475;
-						vocals.volume = 0;
-						playerVocals.volume = 0;
+						var curDiff:String = CoolUtil.difficultyString().toLowerCase();
+
+						if (curDiff == 'erect' || curDiff == 'nightmare')
+						{
+							playerVocals.volume = 0;
+						}
+						else
+						{
+							vocals.volume = 0;
+						}
 						killCombo();
 						noteMiss(daNote.noteData);
 					}
@@ -2558,8 +2572,17 @@ class PlayState extends MusicBeatState
 		health -= 0.04;
 		killCombo();
 		songScore -= 10;
-		vocals.volume = 0;
-		playerVocals.volume = 0;
+
+		var curDiff:String = CoolUtil.difficultyString().toLowerCase();
+
+		if (curDiff == 'erect' || curDiff == 'nightmare')
+		{
+			playerVocals.volume = 0;
+		}
+		else
+		{
+			vocals.volume = 0;
+		}
 
 		switch (direction)
 		{
