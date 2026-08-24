@@ -66,6 +66,7 @@ class ChartingState extends MusicBeatState
 
 	var curRenderedNotes:FlxTypedGroup<Note>;
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
+	var altAnimTexts:FlxTypedGroup<FlxText>;
 
 	var gridBG:FlxSprite;
 
@@ -87,6 +88,8 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
+		altAnimTexts = new FlxTypedGroup<FlxText>();
+
 		curSection = lastSection;
 
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
@@ -172,6 +175,7 @@ class ChartingState extends MusicBeatState
 
 		add(curRenderedNotes);
 		add(curRenderedSustains);
+		add(altAnimTexts);
 
 		changeSection();
 		super.create();
@@ -330,6 +334,8 @@ class ChartingState extends MusicBeatState
 
 	var stepperSusLength:FlxUINumericStepper;
 
+	var check_noteAltAnim:FlxUICheckBox;
+
 	function addNoteUI():Void
 	{
 		var tab_group_note = new FlxUI(null, UI_box);
@@ -339,10 +345,11 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
-		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
+		check_noteAltAnim = new FlxUICheckBox(10, 40, null, null, "Alt Animation Note", 100);
+		check_noteAltAnim.name = 'check_noteAltAnim';
 
 		tab_group_note.add(stepperSusLength);
-		tab_group_note.add(applyLength);
+		tab_group_note.add(check_noteAltAnim);
 
 		UI_box.addGroup(tab_group_note);
 	}
@@ -442,6 +449,11 @@ class ChartingState extends MusicBeatState
 					FlxG.log.add('changed bpm shit');
 				case "Alt Animation":
 					_song.notes[curSection].altAnim = check.checked;
+				case "Alt Animation Note":
+					if (curSelectedNote != null)
+					{
+						curSelectedNote[3] = check.checked;
+					}
 			}
 		}
 		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper))
@@ -855,7 +867,14 @@ class ChartingState extends MusicBeatState
 	function updateNoteUI():Void
 	{
 		if (curSelectedNote != null)
+		{
 			stepperSusLength.value = curSelectedNote[2];
+
+			if (curSelectedNote[3] != null)
+				check_noteAltAnim.checked = curSelectedNote[3];
+			else
+				check_noteAltAnim.checked = false;
+		}
 	}
 
 	function updateGrid():Void
@@ -868,6 +887,11 @@ class ChartingState extends MusicBeatState
 		while (curRenderedSustains.members.length > 0)
 		{
 			curRenderedSustains.remove(curRenderedSustains.members[0], true);
+		}
+
+		while (altAnimTexts.members.length > 0)
+		{
+			altAnimTexts.remove(altAnimTexts.members[0], true);
 		}
 
 		var sectionInfo:Array<Dynamic> = _song.notes[curSection].sectionNotes;
@@ -886,20 +910,6 @@ class ChartingState extends MusicBeatState
 					daBPM = _song.notes[i].bpm;
 			Conductor.changeBPM(daBPM);
 		}
-
-		/* // PORT BULLSHIT, INCASE THERE'S NO SUSTAIN DATA FOR A NOTE
-			for (sec in 0..._song.notes.length)
-			{
-				for (notesse in 0..._song.notes[sec].sectionNotes.length)
-				{
-					if (_song.notes[sec].sectionNotes[notesse][2] == null)
-					{
-						trace('SUS NULL');
-						_song.notes[sec].sectionNotes[notesse][2] = 0;
-					}
-				}
-			}
-		 */
 
 		for (i in sectionInfo)
 		{
@@ -921,6 +931,14 @@ class ChartingState extends MusicBeatState
 				var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
 					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
 				curRenderedSustains.add(sustainVis);
+			}
+
+			if (i[3] == true)
+			{
+				var altText:FlxText = new FlxText(note.x, note.y, GRID_SIZE, "1", 16);
+				altText.alignment = CENTER;
+				altText.color = FlxColor.WHITE;
+				altAnimTexts.add(altText);
 			}
 		}
 	}
@@ -1110,7 +1128,6 @@ class ChartingState extends MusicBeatState
 			var fileName:String = _song.song.toLowerCase() + suffix + ".json";
 
 			#if sys
-			// Direkt im Pfad assets/data/SONGNAME/SONGNAME-DIFFICULTY.json speichern
 			var path:String = "assets/data/" + _song.song.toLowerCase() + "/" + fileName;
 
 			try
@@ -1122,6 +1139,8 @@ class ChartingState extends MusicBeatState
 			{
 				FlxG.log.error("Fehler beim Speichern: " + e);
 			}
+
+			FlxG.log.notice("Erfolgreich gespeichert unter: " + path);
 			#else
 			// Fallback für Browser / HTML5
 			_file = new FileReference();

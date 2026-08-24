@@ -20,8 +20,8 @@ class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
 
-	var curSelected:Int = 0;
-	var curDifficulty:Int = 1;
+	static var curSelected:Int = 0;
+	static var curDifficulty:Int = 1;
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -132,8 +132,11 @@ class FreeplayState extends MusicBeatState
 		listenText.scrollFactor.set();
 		add(listenText);
 
-		changeSelection();
-		changeDiff();
+		if (curSelected >= songs.length)
+			curSelected = 0;
+
+		changeSelection(0);
+		changeDiff(0);
 
 		super.create();
 	}
