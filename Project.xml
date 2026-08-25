@@ -85,6 +85,7 @@
 
 	<assets path="assets/songs" library="songs" exclude="*.fla|*.ogg" if="web" />
 	<assets path="assets/songs" library="songs" exclude="*.fla|*.mp3" unless="web" />
+	<assets path="assets/songs" library="songs" include="*.hx" type="text" />
 	<assets path="assets/shared" library="shared" exclude="*.fla|*.ogg" if="web" />
 	<assets path="assets/shared" library="shared" exclude="*.fla|*.mp3" unless="web" />
 	<assets path="assets/tutorial" library="tutorial" exclude="*.fla|*.ogg" if="web" />
