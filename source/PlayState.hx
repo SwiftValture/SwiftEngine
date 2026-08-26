@@ -1383,9 +1383,9 @@ class PlayState extends MusicBeatState
 		if (playerVocals != null)
 			playerVocals.play();
 
-		resyncVocals();
-
 		startLerpHealth = true;
+
+		resyncVocals();
 	}
 
 	private function generateSong():Void
