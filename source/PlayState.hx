@@ -20,6 +20,8 @@ import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.addons.display.FlxTiledSprite;
+import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxAngle;
@@ -96,6 +98,11 @@ class PlayState extends MusicBeatState
 	private var playerStrums:FlxTypedGroup<FlxSprite>;
 
 	private var camZooming:Bool = false;
+
+	var camZoomInterval:Int = 4;
+	var camZoomAmount:Float = 0.015;
+	var camHUDZoomAmount:Float = 0.03;
+
 	private var curSong:String = "";
 
 	private var gfSpeed:Int = 1;
@@ -185,6 +192,13 @@ class PlayState extends MusicBeatState
 
 	var camPos:FlxPoint;
 	var lightFadeShader:BuildingShaders;
+
+	var mist0:FlxBackdrop;
+	var mist1:FlxBackdrop;
+	var mist2:FlxBackdrop;
+	var mist3:FlxBackdrop;
+	var mist4:FlxBackdrop;
+	var mist5:FlxBackdrop;
 
 	// MODCHART STUFFFS
 	private var strumBaseX:Array<Float> = [];
@@ -726,6 +740,144 @@ class PlayState extends MusicBeatState
 				colorShaderDad.contrast.value = [-23];
 				colorShaderDad.brightness.value = [-33];
 
+			case 'darnell-boyfriend' | 'lit-up-boyfriend':
+				curStage = 'phillyStreetsErect';
+				defaultCamZoom = 0.77;
+
+				var phillySkyline:FlxSprite = new FlxSprite(-545, -273);
+				phillySkyline.loadGraphic(Paths.image('phillyStreets/erect/phillySkyline'));
+				phillySkyline.scrollFactor.set(0.2, 0.2);
+				phillySkyline.antialiasing = true;
+				add(phillySkyline);
+
+				var phillyForegroundCity:FlxSprite = new FlxSprite(600, 69);
+				phillyForegroundCity.loadGraphic(Paths.image('phillyStreets/erect/phillyForegroundCity'));
+				phillyForegroundCity.scrollFactor.set(0.3, 0.3);
+				phillyForegroundCity.antialiasing = true;
+				add(phillyForegroundCity);
+
+				var phillyForegroundCity2:FlxSprite = new FlxSprite(1860, 185);
+				phillyForegroundCity2.loadGraphic(Paths.image('phillyStreets/erect/phillyForegroundCity'));
+				phillyForegroundCity2.scrollFactor.set(0.3, 0.3);
+				phillyForegroundCity2.angle = 5;
+				phillyForegroundCity2.flipX = true;
+				phillyForegroundCity2.antialiasing = true;
+				add(phillyForegroundCity2);
+
+				var phillyConstruction2:FlxSprite = new FlxSprite(1795, 360);
+				phillyConstruction2.loadGraphic(Paths.image('phillyStreets/erect/phillyConstruction'));
+				phillyConstruction2.scrollFactor.set(0.7, 1);
+				phillyConstruction2.antialiasing = true;
+				add(phillyConstruction2);
+
+				var phillyHighwayLights:FlxSprite = new FlxSprite(122, 201);
+				phillyHighwayLights.loadGraphic(Paths.image('phillyStreets/erect/phillyHighwayLights'));
+				phillyHighwayLights.scrollFactor.set(0.8, 0.8);
+				phillyHighwayLights.antialiasing = true;
+				add(phillyHighwayLights);
+
+				var phillyHighwayLights_lightmap:FlxSprite = new FlxSprite(122, 201);
+				phillyHighwayLights_lightmap.loadGraphic(Paths.image('phillyStreets/phillyHighwayLights_lightmap'));
+				phillyHighwayLights_lightmap.scrollFactor.set(0.8, 0.8);
+				phillyHighwayLights_lightmap.alpha = 1;
+				phillyHighwayLights_lightmap.antialiasing = true;
+				add(phillyHighwayLights_lightmap);
+
+				var phillyHighway2:FlxSprite = new FlxSprite(-23, 105);
+				phillyHighway2.loadGraphic(Paths.image('phillyStreets/erect/phillyHighway'));
+				phillyHighway2.scrollFactor.set(0.8, 0.8);
+				phillyHighway2.antialiasing = true;
+				add(phillyHighway2);
+
+				var grey1:FlxSprite = new FlxSprite(-388, 7);
+				grey1.loadGraphic(Paths.image('phillyStreets/erect/greyGradient'));
+				grey1.scrollFactor.set(1, 1);
+				grey1.scale.set(1.3, 1.3);
+				grey1.updateHitbox();
+				grey1.alpha = 0.3;
+				grey1.antialiasing = true;
+				add(grey1);
+
+				var grey2:FlxSprite = new FlxSprite(-388, 7);
+				grey2.loadGraphic(Paths.image('phillyStreets/erect/greyGradient'));
+				grey2.scrollFactor.set(1, 1);
+				grey2.scale.set(1.3, 1.3);
+				grey2.updateHitbox();
+				grey2.alpha = 0.8;
+				grey2.antialiasing = true;
+				add(grey2);
+
+				var phillyCars:FlxSprite = new FlxSprite(1200, 818);
+				phillyCars.frames = Paths.getSparrowAtlas('phillyStreets/erect/phillyCars');
+				phillyCars.animation.addByPrefix('car1', 'car1', 24, false);
+				phillyCars.animation.addByPrefix('car2', 'car2', 24, false);
+				phillyCars.animation.addByPrefix('car3', 'car3', 24, false);
+				phillyCars.animation.addByPrefix('car4', 'car4', 24, false);
+				phillyCars.scrollFactor.set(0.9, 1);
+				phillyCars.antialiasing = true;
+				add(phillyCars);
+
+				var phillyCars2:FlxSprite = new FlxSprite(1200, 818);
+				phillyCars2.frames = Paths.getSparrowAtlas('phillyStreets/erect/phillyCars');
+				phillyCars2.animation.addByPrefix('car1', 'car1', 24, false);
+				phillyCars2.animation.addByPrefix('car2', 'car2', 24, false);
+				phillyCars2.animation.addByPrefix('car3', 'car3', 24, false);
+				phillyCars2.animation.addByPrefix('car4', 'car4', 24, false);
+				phillyCars2.flipX = true;
+				phillyCars2.scrollFactor.set(0.9, 1);
+				phillyCars2.antialiasing = true;
+				add(phillyCars2);
+
+				var phillyTraffic:FlxSprite = new FlxSprite(1840, 608);
+				phillyTraffic.frames = Paths.getSparrowAtlas('phillyStreets/erect/phillyTraffic');
+				phillyTraffic.animation.addByPrefix('togreen', 'redtogreen', 24, false);
+				phillyTraffic.animation.addByPrefix('tored', 'greentored', 24, false);
+				phillyTraffic.scrollFactor.set(0.9, 1);
+				phillyTraffic.antialiasing = true;
+				add(phillyTraffic);
+
+				var phillyTraffic_lightmap:FlxSprite = new FlxSprite(1840, 608);
+				phillyTraffic_lightmap.loadGraphic(Paths.image('phillyStreets/erect/phillyTraffic_lightmap'));
+				phillyTraffic_lightmap.scrollFactor.set(0.9, 1);
+				phillyTraffic_lightmap.alpha = 1;
+				phillyTraffic_lightmap.antialiasing = true;
+				add(phillyTraffic_lightmap);
+
+				var phillyForeground:FlxSprite = new FlxSprite(88, 317);
+				phillyForeground.loadGraphic(Paths.image('phillyStreets/erect/phillyForeground'));
+				phillyForeground.scrollFactor.set(1, 1);
+				phillyForeground.antialiasing = true;
+				add(phillyForeground);
+
+				var paper:FlxSprite = new FlxSprite(350, 608);
+				paper.frames = Paths.getSparrowAtlas('phillyStreets/erect/paper');
+				paper.animation.addByPrefix('paperBlow', 'Paper Blowing instance 1', 24, false);
+				paper.animation.play('paperBlow');
+				paper.scrollFactor.set(1.1, 1.1);
+				paper.alpha = 0;
+				paper.antialiasing = true;
+				add(paper);
+
+				useErectShaders = true;
+
+				colorShaderGf = new AdjustColorShader();
+				colorShaderGf.hue.value = [-5];
+				colorShaderGf.saturation.value = [-40];
+				colorShaderGf.contrast.value = [-25];
+				colorShaderGf.brightness.value = [-20];
+
+				colorShaderDad = new AdjustColorShader();
+				colorShaderDad.hue.value = [-5];
+				colorShaderDad.saturation.value = [-40];
+				colorShaderDad.contrast.value = [-25];
+				colorShaderDad.brightness.value = [-20];
+
+				colorShaderBf = new AdjustColorShader();
+				colorShaderBf.hue.value = [-5];
+				colorShaderBf.saturation.value = [-40];
+				colorShaderBf.contrast.value = [-25];
+				colorShaderBf.brightness.value = [-20];
+
 			default:
 				defaultCamZoom = 0.9;
 				curStage = 'stage';
@@ -875,8 +1027,17 @@ class PlayState extends MusicBeatState
 					gf.x -= 170;
 					gf.y -= 75;
 				}
+
 			case "MainStageErect":
 				boyfriend.setPosition(758, 470);
+
+			case "phillyStreetsErect":
+				dad.setPosition(650, 640);
+				cameraOffsetDadX = 300;
+				cameraOffsetbfX = -400;
+				boyfriend.setPosition(1944, 820);
+				gf.setPosition(1200, 440);
+				gf.scrollFactor.set(1, 1);
 		}
 
 		add(gf);
@@ -1105,6 +1266,22 @@ class PlayState extends MusicBeatState
 		songEvents.variables.set('gf', gf);
 		songEvents.variables.set('camGame', camGame);
 		songEvents.variables.set('camHUD', camHUD);
+		songEvents.variables.set('FlxG.camera', FlxG.camera);
+		songEvents.variables.set('Conductor', Conductor);
+		songEvents.variables.set('camZoomInterval', function(?interval:Int, ?cameraZoom:Float, ?hudZoom:Float)
+		{
+			if (interval == null || cameraZoom == null || hudZoom == null)
+			{
+				camZoomInterval = 4;
+				camZoomAmount = 0.015;
+				camHUDZoomAmount = 0.03;
+				return;
+			}
+
+			camZoomInterval = interval;
+			camZoomAmount = cameraZoom;
+			camHUDZoomAmount = hudZoom;
+		});
 
 		try
 		{
@@ -1399,7 +1576,7 @@ class PlayState extends MusicBeatState
 		{
 			var curDiff:String = CoolUtil.difficultyString().toLowerCase();
 
-			if (curDiff == 'erect' || curDiff == 'nightmare')
+			if (curDiff == 'erect' || curDiff == 'nightmare' || SONG.song.toLowerCase() == 'darnell-boyfriend')
 			{
 				var oppVoices = Paths.voices(SONG.song, '-opponent');
 				var playerVoices = Paths.voices(SONG.song, '-player');
@@ -1927,7 +2104,7 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.EIGHT)
 		{
 			/* 	 8 for opponent char
-							   SHIFT+8 for player char
+				SHIFT+8 for player char
 				CTRL+SHIFT+8 for gf */
 			if (FlxG.keys.pressed.SHIFT)
 				if (FlxG.keys.pressed.CONTROL)
@@ -2164,7 +2341,7 @@ class PlayState extends MusicBeatState
 						health -= 0.0475;
 						var curDiff:String = CoolUtil.difficultyString().toLowerCase();
 
-						if (curDiff == 'erect' || curDiff == 'nightmare')
+						if (curDiff == 'erect' || curDiff == 'nightmare' || SONG.song.toLowerCase() == 'darnell-boyfriend')
 						{
 							playerVocals.volume = 0;
 						}
@@ -2537,14 +2714,20 @@ class PlayState extends MusicBeatState
 
 	var cameraRightSide:Bool = false;
 
+	var cameraOffsetDadX:Int = 0;
+	var cameraOffsetDadY:Int = 0;
+
+	var cameraOffsetbfX:Int = 0;
+	var cameraOffsetbfY:Int = 0;
+
 	function cameraMovement()
 	{
 		if (isForcedCam)
 			return;
 
-		if (camFollow.x != dad.getMidpoint().x + 150 && !cameraRightSide)
+		if (camFollow.x != dad.getMidpoint().x + 150 + cameraOffsetDadX && !cameraRightSide)
 		{
-			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+			camFollow.setPosition(dad.getMidpoint().x + 150 + cameraOffsetDadX, dad.getMidpoint().y - 100 + cameraOffsetDadY);
 
 			switch (dad.curCharacter)
 			{
@@ -2563,9 +2746,9 @@ class PlayState extends MusicBeatState
 				tweenCamIn();
 		}
 
-		if (cameraRightSide && camFollow.x != boyfriend.getMidpoint().x - 100)
+		if (cameraRightSide && camFollow.x != boyfriend.getMidpoint().x - 100 + cameraOffsetbfX)
 		{
-			camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+			camFollow.setPosition(boyfriend.getMidpoint().x - 100 + cameraOffsetbfX, boyfriend.getMidpoint().y - 100 + cameraOffsetbfY);
 
 			switch (curStage)
 			{
@@ -2764,7 +2947,7 @@ class PlayState extends MusicBeatState
 
 		var curDiff:String = CoolUtil.difficultyString().toLowerCase();
 
-		if (curDiff == 'erect' || curDiff == 'nightmare')
+		if (curDiff == 'erect' || curDiff == 'nightmare' || SONG.song.toLowerCase() == 'darnell-boyfriend')
 		{
 			playerVocals.volume = 0;
 		}
@@ -2960,8 +3143,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 20
-			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 20))
+		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 10
+			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 10))
 		{
 			resyncVocals();
 		}
@@ -3007,10 +3190,10 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += 0.03;
 			}
 
-			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % camZoomInterval == 0)
 			{
-				FlxG.camera.zoom += 0.015;
-				camHUD.zoom += 0.03;
+				FlxG.camera.zoom += camZoomAmount;
+				camHUD.zoom += camHUDZoomAmount;
 			}
 		}
 
@@ -3139,6 +3322,21 @@ class PlayState extends MusicBeatState
 		{
 			lightningStrikeShit();
 		}
+	}
+
+	function setCamZoomInterval(?interval:Int, ?cameraZoom:Float, ?hudZoom:Float)
+	{
+		if (interval == null || cameraZoom == null || hudZoom == null)
+		{
+			camZoomInterval = 4;
+			camZoomAmount = 0.015;
+			camHUDZoomAmount = 0.03;
+			return;
+		}
+
+		camZoomInterval = interval;
+		camZoomAmount = cameraZoom;
+		camHUDZoomAmount = hudZoom;
 	}
 
 	var curLight:Int = 0;

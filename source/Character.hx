@@ -314,6 +314,36 @@ class Character extends FlxSprite
 
 				holdTime = 6.1;
 
+			case 'bf-dark':
+				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
+				frames = tex;
+				quickAnimAdd('idle', 'BF idle dance');
+				quickAnimAdd('singUP', 'BF NOTE UP0');
+				quickAnimAdd('singLEFT', 'BF NOTE LEFT0');
+				quickAnimAdd('singRIGHT', 'BF NOTE RIGHT0');
+				quickAnimAdd('singDOWN', 'BF NOTE DOWN0');
+				quickAnimAdd('singUPmiss', 'BF NOTE UP MISS');
+				quickAnimAdd('singLEFTmiss', 'BF NOTE LEFT MISS');
+				quickAnimAdd('singRIGHTmiss', 'BF NOTE RIGHT MISS');
+				quickAnimAdd('singDOWNmiss', 'BF NOTE DOWN MISS');
+				quickAnimAdd('hey', 'BF HEY');
+
+				quickAnimAdd('firstDeath', "BF dies");
+				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
+				quickAnimAdd('deathConfirm', "BF Dead confirm");
+
+				animation.addByPrefix('scared', 'BF idle shaking', 24, true);
+
+				loadOffsetFile(curCharacter);
+
+				playAnim('idle');
+
+				flipX = true;
+
+				loadOffsetFile(curCharacter);
+
+				holdTime = 6.1;
+
 			case 'bf-christmas':
 				var tex = Paths.getSparrowAtlas('characters/bfChristmas');
 				frames = tex;
@@ -516,6 +546,21 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
+
+			case 'darnell':
+				tex = Paths.getSparrowAtlas('characters/darnell');
+				frames = tex;
+				animation.addByIndices('idle', 'Idle', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+				quickAnimAdd('singUP', 'Pose Up');
+				quickAnimAdd('singRIGHT', 'Pose Right');
+				quickAnimAdd('singDOWN', 'Pose Down');
+				quickAnimAdd('singLEFT', 'Pose Left');
+
+				loadOffsetFile(curCharacter);
+
+				playAnim('idle');
+
+				holdTime = 6.1;
 
 			default:
 				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');

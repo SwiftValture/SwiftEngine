@@ -23,15 +23,15 @@ class FlxAnimate extends FlxSymbol
 
 	var swagFrames:Array<BitmapData> = [];
 
-	public function new(x:Float, y:Float)
+	public function new(x:Float, y:Float, folder:String = 'tightBars')
 	{
-		var folder:String = 'tightBars';
 		coolParse = cast Json.parse(Assets.getText(Paths.file('images/' + folder + '/Animation.json')));
+
 		coolParse.AN.TL.L.reverse();
+
 		super(x, y, coolParse);
 
 		frames = FlxAnimate.fromAnimate(Paths.file('images/' + folder + '/spritemap1.png'), Paths.file('images/' + folder + '/spritemap1.json'));
-		// frames
 	}
 
 	override function draw()

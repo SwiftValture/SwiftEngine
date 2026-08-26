@@ -94,6 +94,8 @@ class FreeplayState extends MusicBeatState
 		if (StoryMenuState.weekUnlocked[7] || isDebug)
 			addWeek(['Ugh', 'Guns', 'Stress'], 7, ['tankman']);
 
+		addSong('darnell-boyfriend', 8, 'darnell');
+
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		add(bg);
 

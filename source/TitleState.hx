@@ -70,6 +70,10 @@ class TitleState extends MusicBeatState
 	var window = Lib.application.window;
 	private var overlay:Sprite;
 
+	var jingleArray:Array<Int> = [0x0001, 0x0010, 0x0001, 0x0010, 0x0100, 0x1000, 0x0100, 0x1000];
+	var curJinglePos:Int = 0;
+	var jingleActive:Bool = false;
+
 	override public function create():Void
 	{
 		startedIntro = false;
@@ -270,6 +274,42 @@ class TitleState extends MusicBeatState
 		startedIntro = true;
 	}
 
+	function jingleInput()
+	{
+		if (FlxG.keys.justPressed.LEFT)
+			jingleCode(0x0001);
+		if (FlxG.keys.justPressed.DOWN)
+			jingleCode(0x1000);
+		if (FlxG.keys.justPressed.UP)
+			jingleCode(0x0100);
+		if (FlxG.keys.justPressed.RIGHT)
+			jingleCode(0x0010);
+	}
+
+	function jingleCode(input:Int)
+	{
+		if (input == jingleArray[curJinglePos])
+		{
+			if ((++curJinglePos) >= jingleArray.length)
+				startJingle();
+		}
+		else
+			curJinglePos = 0;
+	}
+
+	function startJingle()
+	{
+		jingleActive = true;
+
+		FlxG.sound.playMusic(Paths.music("girlfriendsRingtone"), 0, true);
+		FlxG.sound.music.fadeIn(4, 0, 1);
+
+		FlxG.camera.flash(FlxColor.WHITE, 1, null, true);
+		FlxG.sound.play(Paths.sound("scrollMenu"));
+
+		Conductor.changeBPM(160);
+	}
+
 	function getIntroTextShit():Array<Array<String>>
 	{
 		var fullText:String = Assets.getText(Paths.txt('introText'));
@@ -289,11 +329,19 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		if (controls.BACK)
+			window.close();
+
 		if (FlxG.keys.justPressed.Y)
 		{
 			FlxTween.cancelTweensOf(window, ["x", "y"]);
 			FlxTween.tween(window, {x: window.x + 300}, 1.4, {ease: FlxEase.quadInOut, type: FlxTweenType.PINGPONG, startDelay: 0.35});
 			FlxTween.tween(window, {y: window.y + 100}, 0.7, {ease: FlxEase.quadInOut, type: FlxTweenType.PINGPONG});
+		}
+
+		if (!jingleActive && skippedIntro)
+		{
+			jingleInput();
 		}
 
 		if (FlxG.sound.music != null)
@@ -394,11 +442,19 @@ class TitleState extends MusicBeatState
 		// if (FlxG.keys.justPressed.SPACE)
 		// swagShader.hasOutline = !swagShader.hasOutline;
 
-		if (controls.UI_LEFT)
-			swagShader.update(-elapsed * 0.1);
+		if (!jingleActive)
+		{
+			if (controls.UI_LEFT)
+				swagShader.update(-elapsed * 0.1);
 
-		if (controls.UI_RIGHT)
+			if (controls.UI_RIGHT)
+				swagShader.update(elapsed * 0.1);
+		}
+
+		if (jingleActive)
+		{
 			swagShader.update(elapsed * 0.1);
+		}
 
 		super.update(elapsed);
 	}
