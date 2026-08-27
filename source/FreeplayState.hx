@@ -96,6 +96,8 @@ class FreeplayState extends MusicBeatState
 
 		addSong('darnell-boyfriend', 8, 'darnell');
 
+		addSong('lit-up-boyfriend', 9, 'darnell');
+
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		add(bg);
 

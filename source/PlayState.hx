@@ -575,7 +575,7 @@ class PlayState extends MusicBeatState
 				bg.scale.set(6, 6);
 				add(bg);
 
-			case 'guns' | 'stress' | 'ugh' | 'ugh-unreleased':
+			case 'guns' | 'stress' | 'ugh' | 'ugh-unreleased' | 'ugh-erect':
 				defaultCamZoom = 0.90;
 				curStage = 'tank';
 
@@ -1027,6 +1027,9 @@ class PlayState extends MusicBeatState
 					gf.x -= 170;
 					gf.y -= 75;
 				}
+			case "philly-erect":
+				cameraOffsetbfX = -100;
+				cameraOffsetbfY = -50;
 
 			case "MainStageErect":
 				boyfriend.setPosition(758, 470);
@@ -1266,8 +1269,18 @@ class PlayState extends MusicBeatState
 		songEvents.variables.set('gf', gf);
 		songEvents.variables.set('camGame', camGame);
 		songEvents.variables.set('camHUD', camHUD);
-		songEvents.variables.set('FlxG.camera', FlxG.camera);
+		songEvents.variables.set('defaultCamZoom', defaultCamZoom);
+		songEvents.variables.set('setDefaultCamZoom', function(value:Float)
+		{
+			defaultCamZoom = value;
+		});
+		songEvents.variables.set('tweenCameraToCharacter', tweenCameraToCharacter);
 		songEvents.variables.set('Conductor', Conductor);
+		songEvents.variables.set('strumLineNotes', strumLineNotes);
+		songEvents.variables.set('strumBaseX', strumBaseX);
+		songEvents.variables.set('strumBaseY', strumBaseY);
+		songEvents.variables.set('strumBaseAngle', strumBaseAngle);
+		songEvents.variables.set('strumBaseAlpha', strumBaseAlpha);
 		songEvents.variables.set('camZoomInterval', function(?interval:Int, ?cameraZoom:Float, ?hudZoom:Float)
 		{
 			if (interval == null || cameraZoom == null || hudZoom == null)
@@ -1576,7 +1589,10 @@ class PlayState extends MusicBeatState
 		{
 			var curDiff:String = CoolUtil.difficultyString().toLowerCase();
 
-			if (curDiff == 'erect' || curDiff == 'nightmare' || SONG.song.toLowerCase() == 'darnell-boyfriend')
+			if (curDiff == 'erect'
+				|| curDiff == 'nightmare'
+				|| SONG.song.toLowerCase() == 'darnell-boyfriend'
+				|| SONG.song.toLowerCase() == 'lit-up-boyfriend')
 			{
 				var oppVoices = Paths.voices(SONG.song, '-opponent');
 				var playerVoices = Paths.voices(SONG.song, '-player');
@@ -2341,7 +2357,10 @@ class PlayState extends MusicBeatState
 						health -= 0.0475;
 						var curDiff:String = CoolUtil.difficultyString().toLowerCase();
 
-						if (curDiff == 'erect' || curDiff == 'nightmare' || SONG.song.toLowerCase() == 'darnell-boyfriend')
+						if (curDiff == 'erect'
+							|| curDiff == 'nightmare'
+							|| SONG.song.toLowerCase() == 'darnell-boyfriend'
+							|| SONG.song.toLowerCase() == 'lit-up-boyfriend')
 						{
 							playerVocals.volume = 0;
 						}
@@ -2725,28 +2744,7 @@ class PlayState extends MusicBeatState
 		if (isForcedCam)
 			return;
 
-		if (camFollow.x != dad.getMidpoint().x + 150 + cameraOffsetDadX && !cameraRightSide)
-		{
-			camFollow.setPosition(dad.getMidpoint().x + 150 + cameraOffsetDadX, dad.getMidpoint().y - 100 + cameraOffsetDadY);
-
-			switch (dad.curCharacter)
-			{
-				case 'mom':
-					camFollow.y = dad.getMidpoint().y;
-
-				case 'senpai' | 'senpai-angry':
-					camFollow.y = dad.getMidpoint().y - 430;
-					camFollow.x = dad.getMidpoint().x - 100;
-			}
-
-			if (dad.curCharacter == 'mom')
-				vocals.volume = 1;
-
-			if (SONG.song.toLowerCase() == 'tutorial')
-				tweenCamIn();
-		}
-
-		if (cameraRightSide && camFollow.x != boyfriend.getMidpoint().x - 100 + cameraOffsetbfX)
+		if (cameraRightSide)
 		{
 			camFollow.setPosition(boyfriend.getMidpoint().x - 100 + cameraOffsetbfX, boyfriend.getMidpoint().y - 100 + cameraOffsetbfY);
 
@@ -2762,9 +2760,133 @@ class PlayState extends MusicBeatState
 					camFollow.x = boyfriend.getMidpoint().x - 200;
 					camFollow.y = boyfriend.getMidpoint().y - 200;
 			}
+		}
+		else
+		{
+			camFollow.setPosition(dad.getMidpoint().x + 150 + cameraOffsetDadX, dad.getMidpoint().y - 100 + cameraOffsetDadY);
 
-			if (SONG.song.toLowerCase() == 'tutorial')
-				FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+			switch (dad.curCharacter)
+			{
+				case 'mom':
+					camFollow.y = dad.getMidpoint().y;
+
+				case 'senpai' | 'senpai-angry':
+					camFollow.y = dad.getMidpoint().y - 430;
+					camFollow.x = dad.getMidpoint().x - 100;
+			}
+		}
+	}
+
+	function tweenCameraToCharacter(target:String, duration:Float = 0.5, ease:String = 'quadOut', force:Bool = false)
+	{
+		if (force)
+			isForcedCam = true;
+
+		var targetX:Float;
+		var targetY:Float;
+
+		switch (target.toLowerCase())
+		{
+			case 'dad':
+				targetX = dad.getMidpoint().x + 150 + cameraOffsetDadX;
+				targetY = dad.getMidpoint().y - 100 + cameraOffsetDadY;
+
+				switch (dad.curCharacter)
+				{
+					case 'mom':
+						targetY = dad.getMidpoint().y;
+
+					case 'senpai' | 'senpai-angry':
+						targetX = dad.getMidpoint().x - 100;
+						targetY = dad.getMidpoint().y - 430;
+				}
+
+			case 'boyfriend' | 'bf':
+				targetX = boyfriend.getMidpoint().x - 100 + cameraOffsetbfX;
+				targetY = boyfriend.getMidpoint().y - 100 + cameraOffsetbfY;
+
+				switch (curStage)
+				{
+					case 'limo':
+						targetX = boyfriend.getMidpoint().x - 300;
+
+					case 'mall':
+						targetY = boyfriend.getMidpoint().y - 200;
+
+					case 'school' | 'schoolEvil':
+						targetX = boyfriend.getMidpoint().x - 200;
+						targetY = boyfriend.getMidpoint().y - 200;
+				}
+
+			case 'gf':
+				targetX = gf.getMidpoint().x;
+				targetY = gf.getMidpoint().y;
+
+			default:
+				return;
+		}
+
+		FlxTween.cancelTweensOf(camFollow);
+
+		FlxTween.tween(camFollow, {
+			x: targetX,
+			y: targetY
+		}, duration, {
+			ease: getCameraEase(ease)
+		});
+	}
+
+	function getCameraEase(ease:String):Dynamic
+	{
+		switch (ease.toLowerCase())
+		{
+			case 'linear':
+				return FlxEase.linear;
+
+			case 'quadIn':
+				return FlxEase.quadIn;
+			case 'quadOut':
+				return FlxEase.quadOut;
+			case 'quadInOut':
+				return FlxEase.quadInOut;
+
+			case 'cubeIn':
+				return FlxEase.cubeIn;
+			case 'cubeOut':
+				return FlxEase.cubeOut;
+			case 'cubeInOut':
+				return FlxEase.cubeInOut;
+
+			case 'sineIn':
+				return FlxEase.sineIn;
+			case 'sineOut':
+				return FlxEase.sineOut;
+			case 'sineInOut':
+				return FlxEase.sineInOut;
+
+			case 'elasticIn':
+				return FlxEase.elasticIn;
+			case 'elasticOut':
+				return FlxEase.elasticOut;
+			case 'elasticInOut':
+				return FlxEase.elasticInOut;
+
+			case 'bounceIn':
+				return FlxEase.bounceIn;
+			case 'bounceOut':
+				return FlxEase.bounceOut;
+			case 'bounceInOut':
+				return FlxEase.bounceInOut;
+
+			case 'backIn':
+				return FlxEase.backIn;
+			case 'backOut':
+				return FlxEase.backOut;
+			case 'backInOut':
+				return FlxEase.backInOut;
+
+			default:
+				return FlxEase.quadOut;
 		}
 	}
 
@@ -2947,7 +3069,10 @@ class PlayState extends MusicBeatState
 
 		var curDiff:String = CoolUtil.difficultyString().toLowerCase();
 
-		if (curDiff == 'erect' || curDiff == 'nightmare' || SONG.song.toLowerCase() == 'darnell-boyfriend')
+		if (curDiff == 'erect'
+			|| curDiff == 'nightmare'
+			|| SONG.song.toLowerCase() == 'darnell-boyfriend'
+			|| SONG.song.toLowerCase() == 'lit-up-boyfriend')
 		{
 			playerVocals.volume = 0;
 		}

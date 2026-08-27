@@ -11,7 +11,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 0.9;
+					setDefaultCamZoom(0.9);
 				}
 			});
 
@@ -37,7 +37,7 @@ function stepHit(curStep)
 				ease: FlxEase.elasticInOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -54,7 +54,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -65,7 +65,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -76,7 +76,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -89,7 +89,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -103,7 +103,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -114,7 +114,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -128,7 +128,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 0.9;
+					setDefaultCamZoom(0.9);
 				}
 			});
 		// Camera Movement | time: 34058.882353 | params: [0]
@@ -143,7 +143,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -154,7 +154,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 0.9;
+					setDefaultCamZoom(0.9);
 				}
 			});
 
@@ -165,7 +165,7 @@ function stepHit(curStep)
 				ease: FlxEase.elasticInOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -182,7 +182,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -193,7 +193,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -204,7 +204,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -215,7 +215,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -226,7 +226,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -237,7 +237,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -248,7 +248,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -259,7 +259,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -270,7 +270,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.25;
+					setDefaultCamZoom(1.25);
 				}
 			});
 
@@ -281,7 +281,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -292,7 +292,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 		// Camera Movement | time: 50823.634146 | params: [1]
@@ -304,7 +304,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -315,7 +315,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -326,7 +326,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -337,7 +337,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -348,7 +348,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -359,7 +359,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -370,7 +370,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -381,7 +381,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -392,7 +392,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.25;
+					setDefaultCamZoom(1.25);
 				}
 			});
 
@@ -403,7 +403,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -414,7 +414,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 		// Camera Movement | time: 56470.634146 | params: [0]
@@ -426,7 +426,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -437,7 +437,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -448,7 +448,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -459,7 +459,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -470,7 +470,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -481,7 +481,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -492,7 +492,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -503,7 +503,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -514,7 +514,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.25;
+					setDefaultCamZoom(1.25);
 				}
 			});
 
@@ -525,7 +525,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -538,7 +538,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -549,7 +549,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -560,7 +560,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -571,7 +571,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -582,7 +582,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -593,7 +593,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -604,7 +604,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -615,7 +615,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -626,7 +626,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -637,7 +637,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.25;
+					setDefaultCamZoom(1.25);
 				}
 			});
 
@@ -648,7 +648,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.2;
+					setDefaultCamZoom(1.2);
 				}
 			});
 
@@ -662,7 +662,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 		// Camera Movement | time: 67941.634146 | params: [0]
@@ -677,7 +677,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -688,7 +688,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -699,7 +699,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -710,7 +710,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 		// Camera Movement | time: 79235.634146 | params: [0]
@@ -724,7 +724,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -735,7 +735,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.05;
+					setDefaultCamZoom(1.05);
 				}
 			});
 
@@ -746,7 +746,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.1;
+					setDefaultCamZoom(1.1);
 				}
 			});
 
@@ -757,7 +757,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1.15;
+					setDefaultCamZoom(1.15);
 				}
 			});
 
@@ -771,7 +771,7 @@ function stepHit(curStep)
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 0.9;
+					setDefaultCamZoom(0.9);
 				}
 			});
 
@@ -785,7 +785,7 @@ function stepHit(curStep)
 				ease: FlxEase.elasticInOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 1;
+					setDefaultCamZoom(1);
 				}
 			});
 
@@ -796,7 +796,7 @@ function stepHit(curStep)
 				ease: FlxEase.sineInOut,
 				onComplete: function(tween)
 				{
-					defaultCamZoom = 0.9;
+					setDefaultCamZoom(0.9);
 				}
 			});
 	}
