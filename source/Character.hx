@@ -7,6 +7,7 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxSort;
 import haxe.io.Path;
+import flxanimate.FlxAnimate;
 
 using StringTools;
 
@@ -22,6 +23,9 @@ class Character extends FlxSprite
 	public var holdTime:Float = 6.1;
 
 	public var animationNotes:Array<Dynamic> = [];
+
+	public var isAnimateAtlas:Bool = false;
+	public var atlas:FlxAnimate;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -314,36 +318,6 @@ class Character extends FlxSprite
 
 				holdTime = 6.1;
 
-			case 'bf-dark':
-				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
-				frames = tex;
-				quickAnimAdd('idle', 'BF idle dance');
-				quickAnimAdd('singUP', 'BF NOTE UP0');
-				quickAnimAdd('singLEFT', 'BF NOTE LEFT0');
-				quickAnimAdd('singRIGHT', 'BF NOTE RIGHT0');
-				quickAnimAdd('singDOWN', 'BF NOTE DOWN0');
-				quickAnimAdd('singUPmiss', 'BF NOTE UP MISS');
-				quickAnimAdd('singLEFTmiss', 'BF NOTE LEFT MISS');
-				quickAnimAdd('singRIGHTmiss', 'BF NOTE RIGHT MISS');
-				quickAnimAdd('singDOWNmiss', 'BF NOTE DOWN MISS');
-				quickAnimAdd('hey', 'BF HEY');
-
-				quickAnimAdd('firstDeath', "BF dies");
-				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
-				quickAnimAdd('deathConfirm', "BF Dead confirm");
-
-				animation.addByPrefix('scared', 'BF idle shaking', 24, true);
-
-				loadOffsetFile(curCharacter);
-
-				playAnim('idle');
-
-				flipX = true;
-
-				loadOffsetFile(curCharacter);
-
-				holdTime = 6.1;
-
 			case 'bf-christmas':
 				var tex = Paths.getSparrowAtlas('characters/bfChristmas');
 				frames = tex;
@@ -562,6 +536,23 @@ class Character extends FlxSprite
 
 				holdTime = 6.1;
 
+			/*case 'bf-dark':
+				isAnimateAtlas = true;
+
+				atlas = new FlxAnimate(x, y, Paths.getAnimateAtlas('characters/bf-dark'));
+
+				atlas.showPivot = false;
+
+				atlas.anim.addBySymbol('idle', 'Idle', 0, 0, 24);
+				atlas.anim.addBySymbol('singUP', 'Sing Up', 0, 0, 24);
+				atlas.anim.addBySymbol('singDOWN', 'Sing Down', 0, 0, 24);
+				atlas.anim.addBySymbol('singLEFT', 'Sing Left', 0, 0, 24);
+				atlas.anim.addBySymbol('singRIGHT', 'Sing Right', 0, 0, 24);
+
+				loadOffsetFile(curCharacter);
+				playAnim('idle');
+
+				holdTime = 6.1; */
 			default:
 				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				frames = tex;
@@ -662,6 +653,17 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
+		if (isAnimateAtlas)
+		{
+			atlas.x = x;
+			atlas.y = y;
+			atlas.flipX = flipX;
+			atlas.flipY = flipY;
+			atlas.alpha = alpha;
+			atlas.color = color;
+			atlas.update(elapsed);
+		}
+
 		if (animation.curAnim.name.startsWith('sing'))
 		{
 			holdTimer += elapsed;
@@ -759,13 +761,14 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
-		animation.play(AnimName, Force, Reversed, Frame);
+		if (isAnimateAtlas)
+			atlas.anim.play(AnimName, Force, Reversed, Frame);
+		else
+			animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName))
-		{
 			offset.set(daOffset[0], daOffset[1]);
-		}
 		else
 			offset.set(0, 0);
 

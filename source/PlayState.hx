@@ -1260,30 +1260,41 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
+		if (songEvents != null)
+		{
+			var createFunc:Dynamic = songEvents.variables.get('create');
+
+			if (createFunc != null)
+				Reflect.callMethod(null, createFunc, []);
+		}
+
 		instance = this;
+
+		if (songEvents != null)
+		{
+			var postCreateFunc:Dynamic = songEvents.variables.get('postCreate');
+
+			if (postCreateFunc != null)
+				Reflect.callMethod(null, postCreateFunc, []);
+		}
 	}
 
 	function loadSongEvents()
 	{
 		#if sys
-		var path = 'assets/songs/' + SONG.song.toLowerCase() + '/events.hx';
+		var folder = 'assets/songs/' + SONG.song.toLowerCase();
 
-		trace('EVENT PATH: ' + path);
-		trace('FILE EXISTS: ' + FileSystem.exists(path));
+		trace('EVENT FOLDER: ' + folder);
 
-		if (!FileSystem.exists(path))
+		if (!FileSystem.exists(folder))
 		{
-			trace('No events.hx found for ' + SONG.song);
+			trace('No song folder found for ' + SONG.song);
 			return;
 		}
 
-		var code = File.getContent(path);
-
-		trace('Found events.hx for ' + SONG.song);
-
-		var parser = new Parser();
 		songEvents = new Interp();
 
+		// Global variables available to every HScript file
 		songEvents.variables.set('FlxG', FlxG);
 		songEvents.variables.set('FlxTween', FlxTween);
 		songEvents.variables.set('FlxEase', FlxEase);
@@ -1292,18 +1303,23 @@ class PlayState extends MusicBeatState
 		songEvents.variables.set('gf', gf);
 		songEvents.variables.set('camGame', camGame);
 		songEvents.variables.set('camHUD', camHUD);
+
 		songEvents.variables.set('defaultCamZoom', defaultCamZoom);
+
 		songEvents.variables.set('setDefaultCamZoom', function(value:Float)
 		{
 			defaultCamZoom = value;
 		});
+
 		songEvents.variables.set('tweenCameraToCharacter', tweenCameraToCharacter);
 		songEvents.variables.set('Conductor', Conductor);
+
 		songEvents.variables.set('strumLineNotes', strumLineNotes);
 		songEvents.variables.set('strumBaseX', strumBaseX);
 		songEvents.variables.set('strumBaseY', strumBaseY);
 		songEvents.variables.set('strumBaseAngle', strumBaseAngle);
 		songEvents.variables.set('strumBaseAlpha', strumBaseAlpha);
+
 		songEvents.variables.set('camZoomInterval', function(?interval:Int, ?cameraZoom:Float, ?hudZoom:Float)
 		{
 			if (interval == null || cameraZoom == null || hudZoom == null)
@@ -1319,15 +1335,31 @@ class PlayState extends MusicBeatState
 			camHUDZoomAmount = hudZoom;
 		});
 
-		try
+		var files = FileSystem.readDirectory(folder);
+
+		for (file in files)
 		{
-			var program = parser.parseString(code);
-			songEvents.execute(program);
-			trace('events.hx executed!');
-		}
-		catch (e:Dynamic)
-		{
-			trace('events.hx error: ' + e);
+			if (!file.toLowerCase().endsWith('.hx'))
+				continue;
+
+			var path = folder + '/' + file;
+
+			trace('Loading HScript: ' + path);
+
+			try
+			{
+				var code = File.getContent(path);
+				var parser = new Parser();
+				var program = parser.parseString(code);
+
+				songEvents.execute(program);
+
+				trace('HScript executed: ' + file);
+			}
+			catch (e:Dynamic)
+			{
+				trace('HScript error in ' + file + ': ' + e);
+			}
 		}
 		#end
 	}
@@ -2061,6 +2093,14 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
+		if (songEvents != null)
+		{
+			var updateFunc:Dynamic = songEvents.variables.get('update');
+
+			if (updateFunc != null)
+				Reflect.callMethod(null, updateFunc, [elapsed]);
+		}
+
 		lerpHealth = CoolUtil.fpsLerp(lerpHealth, (health * 50), 0.15);
 
 		if (startLerpHealth)
@@ -2411,6 +2451,14 @@ class PlayState extends MusicBeatState
 
 		if (!inCutscene)
 			keyShit();
+
+		if (songEvents != null)
+		{
+			var postUpdateFunc:Dynamic = songEvents.variables.get('postUpdate');
+
+			if (postUpdateFunc != null)
+				Reflect.callMethod(null, postUpdateFunc, [elapsed]);
+		}
 	}
 
 	private function getRatingFC():String

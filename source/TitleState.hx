@@ -308,6 +308,8 @@ class TitleState extends MusicBeatState
 		FlxG.sound.play(Paths.sound("scrollMenu"));
 
 		Conductor.changeBPM(160);
+
+		trace(Paths.getAnimateAtlas('characters/bf-dark'));
 	}
 
 	function getIntroTextShit():Array<Array<String>>

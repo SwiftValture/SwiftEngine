@@ -15,6 +15,8 @@ import openfl.events.NetStatusEvent;
 import openfl.media.Video;
 import openfl.net.NetConnection;
 import openfl.net.NetStream;
+import flixel.system.ui.FlxSoundTray;
+import openfl.display.Bitmap;
 
 class Main extends Sprite
 {
@@ -29,6 +31,10 @@ class Main extends Sprite
 	#end
 	var skipSplash:Bool = true;
 	var startFullscreen:Bool = false;
+
+	var trueY:Float = 0;
+	var lerpYPos:Float = 0;
+	var alphaTarget:Float = 0;
 
 	public static function main():Void
 	{
@@ -98,6 +104,9 @@ class Main extends Sprite
 		#end
 
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash, startFullscreen));
+
+		FlxG.game.soundTray.volumeDownSound = Paths.sound('menu/Voldown');
+		FlxG.game.soundTray.volumeUpSound = Paths.sound('menu/Volup');
 
 		FlxG.save.bind("SwiftEngine");
 
