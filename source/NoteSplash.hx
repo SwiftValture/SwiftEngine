@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import haxe.io.Path;
 import StringTools;
+import ui.PreferencesMenu;
 
 class NoteSplash extends FlxSprite
 {
@@ -39,6 +40,8 @@ class NoteSplash extends FlxSprite
 		offset.set(width * 0.3, height * 0.3);
 
 		antialiasing = true;
+
+		visible = PreferencesMenu.getPref('show splashes');
 	}
 
 	override function update(elapsed:Float)

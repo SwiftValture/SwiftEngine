@@ -1,4 +1,4 @@
-function stepHit(curStep)
+/*function stepHit(curStep)
 {
 	switch (curStep)
 	{
@@ -793,3 +793,4 @@ function stepHit(curStep)
 			// Camera Modulo Change | time: 130823.709677 | params: [4,1]
 	}
 }
+*/

@@ -32,7 +32,9 @@ class PreferencesMenu extends ui.OptionsState.Page
 
 		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
+		createPrefItem('middlescroll', 'middlescroll', false);
 		createPrefItem('ghost Tapping', 'ghost Tapping', false);
+		createPrefItem('show splashes', 'show splashes', false);
 		createPrefItem('flashing menu', 'flashing-menu', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
@@ -77,7 +79,9 @@ class PreferencesMenu extends ui.OptionsState.Page
 
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
+		preferenceCheck('middlescroll', false);
 		preferenceCheck('ghost Tapping', false);
+		preferenceCheck('show splashes', false);
 		preferenceCheck('flashing-menu', true);
 		preferenceCheck('camera-zoom', true);
 		preferenceCheck('fps-counter', true);
