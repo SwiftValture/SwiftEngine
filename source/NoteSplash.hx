@@ -29,7 +29,7 @@ class NoteSplash extends FlxSprite
 		setupNoteSplash(x, y, noteData);
 	}
 
-	public function setupNoteSplash(x:Float, y:Float, noteData:Int = 0)
+	public function setupNoteSplash(x:Float, y:Float, noteData:Int = 0, refWidth:Float = 0, refHeight:Float = 0)
 	{
 		setPosition(x, y);
 		alpha = 0.6;
@@ -37,7 +37,7 @@ class NoteSplash extends FlxSprite
 		animation.play('note' + noteData + '-' + FlxG.random.int(0, 1), true);
 		updateHitbox();
 
-		offset.set(width * 0.3, height * 0.3);
+		offset.set(0.5 * (width - refWidth), 0.5 * (height - refHeight));
 
 		antialiasing = true;
 

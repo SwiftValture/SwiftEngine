@@ -46,9 +46,12 @@ class Note extends FlxSprite
 
 	public static var arrowColors:Array<Float> = [1, 1, 1, 1];
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, createdFrom:Dynamic = null)
 	{
 		super();
+
+		if (createdFrom == null)
+			createdFrom = PlayState.instance;
 
 		if (prevNote == null)
 			prevNote = this;
@@ -171,7 +174,15 @@ class Note extends FlxSprite
 			}
 
 			updateHitbox();
-			offset.y -= 6.25;
+			if (PreferencesMenu.getPref('downscroll'))
+			{
+				offset.y -= 14;
+			}
+			else
+			{
+				offset.y -= 0;
+			}
+
 			x -= width / 2;
 
 			if (PlayState.curStage.startsWith('school'))
@@ -193,7 +204,10 @@ class Note extends FlxSprite
 						prevNote.animation.play('redhold');
 				}
 
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+				var timeDistance:Float = strumTime - prevNote.strumTime;
+				var sustainDistance:Float = timeDistance * 0.45 * PlayState.SONG.speed;
+
+				prevNote.scale.y = (sustainDistance + 3) / prevNote.frameHeight;
 				prevNote.updateHitbox();
 			}
 		}

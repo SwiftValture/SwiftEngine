@@ -118,6 +118,8 @@ class Main extends Sprite
 		#if !mobile
 		addChild(fpsCounter);
 		#end
+
+		FlxG.fixedTimestep = false;
 	}
 
 	public function update(elapsed:Float) {}

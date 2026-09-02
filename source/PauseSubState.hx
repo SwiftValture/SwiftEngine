@@ -21,6 +21,7 @@ class PauseSubState extends MusicBeatSubstate
 		'Resume',
 		'Restart Song',
 		'Change Difficulty',
+		'Options',
 		'Toggle Practice Mode',
 		'Exit to menu'
 	];
@@ -167,6 +168,8 @@ class PauseSubState extends MusicBeatSubstate
 				case 'Change Difficulty':
 					menuItems = difficultyChoices;
 					regenMenu();
+				case 'Options':
+					regenMenu();
 				case 'BACK':
 					menuItems = pauseOG;
 					regenMenu();
@@ -180,12 +183,6 @@ class PauseSubState extends MusicBeatSubstate
 					else
 						FlxG.switchState(new FreeplayState());
 			}
-		}
-
-		if (FlxG.keys.justPressed.J)
-		{
-			// for reference later!
-			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
 		}
 	}
 

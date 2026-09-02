@@ -1361,6 +1361,16 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
+	function formatTime(milliseconds:Float):String
+	{
+		var totalSeconds:Int = Math.floor(milliseconds / 1000);
+
+		var minutes:Int = Math.floor(totalSeconds / 60);
+		var seconds:Int = totalSeconds % 60;
+
+		return minutes + ":" + StringTools.lpad(Std.string(seconds), "0", 2);
+	}
+
 	public var rainColor = 0xFF6680cc;
 
 	function getColorVec(color:Int):Array<Float>
@@ -2076,7 +2086,7 @@ class PlayState extends MusicBeatState
 
 		if (updateTimer >= 1)
 		{
-			trace("Updates: " + updateCount);
+			// trace("Updates: " + updateCount);
 			updateCount = 0;
 			updateTimer = 0;
 		}
@@ -2177,9 +2187,12 @@ class PlayState extends MusicBeatState
 		}
 
 		var displayAccuracy:String = (totalNotesPlayed == 0) ? "0" : Std.string(FlxMath.roundDecimal(accuracy, 2));
+		var songLength:Float = FlxG.sound.music.length;
+		var currentTime:Float = Conductor.songPosition;
+		var remainingTime:Float = Math.max(0, songLength - currentTime);
 
 		scoreTxt.text = "Score: " + FlxStringUtil.formatMoney(songScore, false, true) + " • Misses: " + songMisses + " • Accuracy: " + displayAccuracy + "%"
-			+ " -" + " (" + getRatingFC() + ")";
+			+ " -" + " (" + getRatingFC() + ")" + ' | ' + formatTime(remainingTime);
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -2271,8 +2284,10 @@ class PlayState extends MusicBeatState
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, factor);
 		}
 
-		FlxG.watch.addQuick("beatShit", curBeat);
-		FlxG.watch.addQuick("stepShit", curStep);
+		FlxG.watch.addQuick("curBeat", curBeat);
+		FlxG.watch.addQuick("curStep", curStep);
+		FlxG.watch.addQuick("health", health);
+		FlxG.watch.addQuick("songPosition", Conductor.songPosition);
 
 		if (curSong == 'Fresh')
 		{
@@ -2693,7 +2708,7 @@ class PlayState extends MusicBeatState
 		if (isSick)
 		{
 			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y - 6, daNote.noteData);
+			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData, daNote.width, daNote.height);
 			grpNoteSplashes.add(noteSplash);
 		}
 
@@ -3474,7 +3489,8 @@ class PlayState extends MusicBeatState
 		}
 
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 10
-			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 10))
+			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 10)
+			|| (SONG.needsVoices && Math.abs(playerVocals.time - (Conductor.songPosition - Conductor.offset)) > 10))
 		{
 			resyncVocals();
 		}
