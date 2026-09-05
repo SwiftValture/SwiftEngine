@@ -2,21 +2,21 @@ package animate;
 
 // import animateAtlasPlayer.assets.AssetManager;
 // import animateAtlasPlayer.core.Animation;
-import animate.FlxSymbol.Parsed;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.FlxGraphic;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.system.FlxAssets.FlxGraphicAsset;
-import haxe.Json;
-import openfl.Assets;
-import openfl.display.BitmapData;
-import openfl.geom.Rectangle;
+/*import animate.FlxSymbol.Parsed;
+	import flixel.FlxG;
+	import flixel.FlxSprite;
+	import flixel.graphics.FlxGraphic;
+	import flixel.graphics.frames.FlxAtlasFrames;
+	import flixel.math.FlxPoint;
+	import flixel.math.FlxRect;
+	import flixel.system.FlxAssets.FlxGraphicAsset;
+	import haxe.Json;
+	import openfl.Assets;
+	import openfl.display.BitmapData;
+	import openfl.geom.Rectangle;
 
-class FlxAnimate extends FlxSymbol
-{
+	class FlxAnimate extends FlxSymbol
+	{
 	// var myAnim:Animation;
 	// var animBitmap:BitmapData;
 	var loadedQueue:Bool = false;
@@ -131,19 +131,19 @@ class FlxAnimate extends FlxSymbol
 
 		return frames;
 	}
-}
+	}
 
-typedef AnimateObject =
-{
+	typedef AnimateObject =
+	{
 	SPRITES:Array<Dynamic>
-}
+	}
 
-typedef AnimateSprite =
-{
+	typedef AnimateSprite =
+	{
 	var name:String;
 	var x:Int;
 	var y:Int;
 	var w:Int;
 	var h:Int;
 	var rotated:Bool;
-}
+}*/

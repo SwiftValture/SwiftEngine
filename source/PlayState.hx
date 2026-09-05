@@ -46,6 +46,7 @@ import openfl.display.BitmapData;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
+import openfl.filters.BlurFilter;
 import shaderslmfao.BuildingShaders.BuildingShader;
 import shaderslmfao.BuildingShaders;
 import shaderslmfao.ColorSwap;
@@ -203,6 +204,8 @@ class PlayState extends MusicBeatState
 	var mist3:FlxBackdrop;
 	var mist4:FlxBackdrop;
 	var mist5:FlxBackdrop;
+
+	var blurFilter:BlurFilter = new BlurFilter(6, 6);
 
 	// MODCHART STUFFFS
 	private var strumBaseX:Array<Float> = [];
@@ -901,6 +904,8 @@ class PlayState extends MusicBeatState
 				rainShader.uTime.value = [0];
 				FlxG.camera.filters = [new ShaderFilter(rainShader)];
 
+			// FlxG.camera.filters = [new openfl.filters.BlurFilter(16, 16)];
+
 			default:
 				defaultCamZoom = 0.9;
 				curStage = 'stage';
@@ -1129,9 +1134,9 @@ class PlayState extends MusicBeatState
 
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 
-		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
-		grpNoteSplashes.add(noteSplash);
-		noteSplash.alpha = 0.1;
+		var splash:NoteSplash = new NoteSplash(100, 100, 0);
+		grpNoteSplashes.add(splash);
+		splash.alpha = 0.0;
 		add(grpNoteSplashes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
@@ -1746,6 +1751,9 @@ class PlayState extends MusicBeatState
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
+
+					sustainNote.isLastSustain = susNote == Math.floor(susLength) - 1;
+
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
 
@@ -2390,7 +2398,13 @@ class PlayState extends MusicBeatState
 					daNote.x = strum.x;
 
 					if (daNote.isSustainNote)
+					{
 						daNote.x += 36;
+					}
+					else if (curStage.startsWith('school'))
+					{
+						daNote.x += 9;
+					}
 
 					noteStrumY = strum.y;
 				}
@@ -2705,11 +2719,11 @@ class PlayState extends MusicBeatState
 
 		accuracy = (totalNotesHit / totalNotesPlayed) * 100;
 
-		if (isSick)
+		if (isSick && daNote != null)
 		{
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData, daNote.width, daNote.height);
-			grpNoteSplashes.add(noteSplash);
+			var splash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
+			splash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
+			grpNoteSplashes.add(splash);
 		}
 
 		if (!practiceMode)
@@ -2721,11 +2735,8 @@ class PlayState extends MusicBeatState
 			ratingPath = "weeb/pixelUI/" + ratingPath + "-pixel";
 
 		rating.loadGraphic(Paths.image(ratingPath));
-		rating.x = FlxG.width * 0.55 - 40;
-		if (rating.x < FlxG.camera.scroll.x)
-			rating.x = FlxG.camera.scroll.x;
-		else if (rating.x > FlxG.camera.scroll.x + FlxG.camera.width - rating.width)
-			rating.x = FlxG.camera.scroll.x + FlxG.camera.width - rating.width;
+		rating.cameras = [camHUD];
+		rating.x = FlxG.width * 0.55 - 40 - 300;
 
 		rating.y = FlxG.camera.height * 0.4 - 60;
 		rating.acceleration.y = 550;
@@ -2772,12 +2783,9 @@ class PlayState extends MusicBeatState
 
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
 		comboSpr.y = FlxG.camera.height * 0.4 + 80;
-		comboSpr.x = FlxG.width * 0.55;
-
-		if (comboSpr.x < FlxG.camera.scroll.x + 194)
-			comboSpr.x = FlxG.camera.scroll.x + 194;
-		else if (comboSpr.x > FlxG.camera.scroll.x + FlxG.camera.width - comboSpr.width)
-			comboSpr.x = FlxG.camera.scroll.x + FlxG.camera.width - comboSpr.width;
+		comboSpr.x = FlxG.width * 0.55 - 300;
+		comboSpr.cameras = [camHUD];
+		comboSpr.visible = false;
 
 		comboSpr.acceleration.y = 600;
 		comboSpr.velocity.y -= 150;
@@ -2820,6 +2828,7 @@ class PlayState extends MusicBeatState
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
 			numScore.y = comboSpr.y;
+			numScore.cameras = [camHUD];
 
 			if (curStage.startsWith('school'))
 			{
@@ -2832,7 +2841,7 @@ class PlayState extends MusicBeatState
 			}
 			numScore.updateHitbox();
 
-			numScore.x = comboSpr.x - (43 * daLoop); //- 90;
+			numScore.x = comboSpr.x - (43 * daLoop) + 40; //- 90;
 			numScore.acceleration.y = FlxG.random.int(200, 300);
 			numScore.velocity.y -= FlxG.random.int(140, 160);
 			numScore.velocity.x = FlxG.random.float(-5, 5);
@@ -3279,6 +3288,18 @@ class PlayState extends MusicBeatState
 					boyfriend.playAnim('singRIGHT', true);
 			}
 
+			if (note.isSustainNote)
+			{
+				if (note.isLastSustain)
+				{
+					boyfriend.animation.paused = false;
+				}
+				else
+				{
+					boyfriend.animation.paused = true;
+				}
+			}
+
 			playerStrums.forEach(function(spr:FlxSprite)
 			{
 				if (Math.abs(note.noteData) == spr.ID)
@@ -3347,6 +3368,18 @@ class PlayState extends MusicBeatState
 				dad.playAnim('singUP' + altAnim, true);
 			case 3:
 				dad.playAnim('singRIGHT' + altAnim, true);
+		}
+
+		if (note.isSustainNote)
+		{
+			if (note.isLastSustain)
+			{
+				dad.animation.paused = false;
+			}
+			else
+			{
+				dad.animation.paused = true;
+			}
 		}
 
 		dad.holdTimer = 0;
@@ -3489,8 +3522,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 10
-			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 10)
-			|| (SONG.needsVoices && Math.abs(playerVocals.time - (Conductor.songPosition - Conductor.offset)) > 10))
+			|| (SONG.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 10))
 		{
 			resyncVocals();
 		}

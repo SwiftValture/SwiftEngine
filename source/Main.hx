@@ -108,6 +108,8 @@ class Main extends Sprite
 		FlxG.game.soundTray.volumeDownSound = Paths.sound('menu/Voldown');
 		FlxG.game.soundTray.volumeUpSound = Paths.sound('menu/Volup');
 
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onVolumeKeyPress);
+
 		FlxG.save.bind("SwiftEngine");
 
 		if (FlxG.save.data.volume == null)
@@ -120,6 +122,30 @@ class Main extends Sprite
 		#end
 
 		FlxG.fixedTimestep = false;
+		FlxG.mouse.useSystemCursor = true;
+	}
+
+	private function onVolumeKeyPress(event:KeyboardEvent):Void
+	{
+		if (event.keyCode == Keyboard.NUMBER_0
+			|| event.keyCode == Keyboard.NUMPAD_0
+			|| event.keyCode == Keyboard.MINUS
+			|| event.keyCode == Keyboard.NUMPAD_SUBTRACT
+			|| event.keyCode == Keyboard.EQUAL
+			|| event.keyCode == Keyboard.NUMPAD_ADD)
+		{
+			haxe.Timer.delay(function()
+			{
+				if (FlxG.sound.volume >= 1.0)
+				{
+					FlxG.game.soundTray.volumeUpSound = Paths.sound('menu/VolMAX');
+				}
+				else
+				{
+					FlxG.game.soundTray.volumeUpSound = Paths.sound('menu/Volup');
+				}
+			}, 5);
+		}
 	}
 
 	public function update(elapsed:Float) {}

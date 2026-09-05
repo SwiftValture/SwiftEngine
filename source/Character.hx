@@ -1,5 +1,6 @@
 package;
 
+import flixel.animation.FlxAnimation;
 import Section.SwagSection;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -7,7 +8,6 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxSort;
 import haxe.io.Path;
-import flxanimate.FlxAnimate;
 
 using StringTools;
 
@@ -23,9 +23,6 @@ class Character extends FlxSprite
 	public var holdTime:Float = 6.1;
 
 	public var animationNotes:Array<Dynamic> = [];
-
-	public var isAnimateAtlas:Bool = false;
-	public var atlas:FlxAnimate;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -653,17 +650,6 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		if (isAnimateAtlas)
-		{
-			atlas.x = x;
-			atlas.y = y;
-			atlas.flipX = flipX;
-			atlas.flipY = flipY;
-			atlas.alpha = alpha;
-			atlas.color = color;
-			atlas.update(elapsed);
-		}
-
 		if (animation.curAnim.name.startsWith('sing'))
 		{
 			holdTimer += elapsed;
@@ -761,10 +747,7 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
-		if (isAnimateAtlas)
-			atlas.anim.play(AnimName, Force, Reversed, Frame);
-		else
-			animation.play(AnimName, Force, Reversed, Frame);
+		animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName))

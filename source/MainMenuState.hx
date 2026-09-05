@@ -116,7 +116,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		FlxG.cameras.reset(new SwagCamera());
-		FlxG.camera.follow(camFollow, null, 0.06);
+		FlxG.camera.follow(camFollow, null, 0.09);
 
 		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "SwiftEngine version: " + Application.current.meta.get('version'), 12);
 		versionShit.scrollFactor.set();

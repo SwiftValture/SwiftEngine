@@ -46,6 +46,8 @@ class Note extends FlxSprite
 
 	public static var arrowColors:Array<Float> = [1, 1, 1, 1];
 
+	public var isLastSustain:Bool = false;
+
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, createdFrom:Dynamic = null)
 	{
 		super();

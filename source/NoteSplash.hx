@@ -2,9 +2,8 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import haxe.io.Path;
-import StringTools;
 import ui.PreferencesMenu;
+import flixel.graphics.frames.FlxAtlasFrames;
 
 class NoteSplash extends FlxSprite
 {
@@ -25,22 +24,19 @@ class NoteSplash extends FlxSprite
 		animation.addByPrefix('note2-1', 'note impact 2 green', 24, false);
 		animation.addByPrefix('note0-1', 'note impact 2 purple', 24, false);
 		animation.addByPrefix('note3-1', 'note impact 2 red', 24, false);
-
 		setupNoteSplash(x, y, noteData);
+		antialiasing = true;
 	}
 
-	public function setupNoteSplash(x:Float, y:Float, noteData:Int = 0, refWidth:Float = 0, refHeight:Float = 0)
+	public function setupNoteSplash(x:Float, y:Float, ?noteData:Int = 0)
 	{
 		setPosition(x, y);
 		alpha = 0.6;
-
 		animation.play('note' + noteData + '-' + FlxG.random.int(0, 1), true);
+		animation.curAnim.frameRate = 24 + FlxG.random.int(-2, 2);
 		updateHitbox();
-
-		offset.set(0.5 * (width - refWidth), 0.5 * (height - refHeight));
-
+		offset.set(Std.int(0.3 * width), Std.int(0.3 * height));
 		antialiasing = true;
-
 		visible = PreferencesMenu.getPref('show splashes');
 	}
 
