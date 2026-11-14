@@ -1,0 +1,505 @@
+function stepHit(curStep)
+{
+	switch (curStep)
+	{
+		case 0:
+			// Camera Movement | time: 0 | params: [0]
+
+		case 32:
+			// Camera Movement | time: 2526.315789 | params: [1]
+
+		case 64:
+			// Camera Movement | time: 5052.631579 | params: [0]
+
+		case 96:
+			// Camera Movement | time: 7578.947368 | params: [1]
+
+		case 128:
+			// Camera Movement | time: 10105.263158 | params: [0]
+
+		case 192:
+			// Camera Movement | time: 15157.894737 | params: [1]
+
+		case 255:
+			camZoomInterval(2, 0.015 * 1.1, 0.03 * 1.1);
+
+		case 256:
+			// Camera Movement | time: 20210.526316 | params: [0]
+
+		case 304:
+			// Camera Movement | time: 24000 | params: [1]
+
+		case 319:
+			camZoomInterval(2, 0.015 * 1.2, 0.03 * 1.2);
+
+		case 383:
+			camZoomInterval(1, 0.015 * 1.3, 0.03 * 1.3);
+
+		case 384:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 447:
+			camZoomInterval(1, 0.015 * 1.4, 0.03 * 1.4);
+
+		case 448:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.2);
+				}
+			});
+
+		case 479:
+			camZoomInterval(1, 0.015 * 1.5, 0.03 * 1.5);
+
+		case 480:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.3}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.3);
+				}
+			});
+
+		case 496:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.35}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.35);
+				}
+			});
+
+		case 511:
+			camZoomInterval(1, 0.015 * 1.2, 0.03 * 1.2);
+
+		case 512:
+			// Camera Movement | time: 40421.052632 | params: [0]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 524:
+			// Camera Position | time: 41368 | params: [-100,30,true,32,"expo",null,true]
+			// Camera Movement | time: 41368 | params: [2,true,32,"expo",null]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.95}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.95);
+				}
+			});
+
+		case 576:
+			// Camera Position | time: 45473 | params: [-20,30,true,32,"expo",null,true]
+			// Camera Movement | time: 45473 | params: [2,true,32,"expo",null]
+
+		case 624:
+			// Camera Movement | time: 49263.157895 | params: [1]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 703:
+			camZoomInterval(1, 0.015 * 1.3, 0.03 * 1.3);
+
+		case 704:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 738:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.2);
+				}
+			});
+
+		case 752:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.3}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.3);
+				}
+			});
+
+		case 764:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 8, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 767:
+			camZoomInterval(1, 0.015 * 1.2, 0.03 * 1.2);
+
+		case 768:
+			// Camera Position | time: 60631 | params: [-100,30,true,32,"expo",null,true]
+			// Camera Movement | time: 60631 | params: [2,true,32,"expo",null]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.9);
+				}
+			});
+
+		case 800:
+			// Camera Position | time: 63157 | params: [-20,30,true,32,"expo",null,true]
+			// Camera Movement | time: 63157 | params: [2,true,32,"expo",null]
+
+		case 832:
+			// Camera Position | time: 65684 | params: [-100,30,true,32,"expo",null,true]
+			// Camera Movement | time: 65684 | params: [2,true,32,"expo",null]
+
+		case 864:
+			// Camera Position | time: 68210 | params: [-20,30,true,32,"expo",null,true]
+			// Camera Movement | time: 68210 | params: [2,true,32,"expo",null]
+
+		case 896:
+			// Camera Position | time: 70736 | params: [-100,30,true,32,"expo",null,true]
+			// Camera Movement | time: 70736 | params: [2,true,32,"expo",null]
+
+		case 959:
+			camZoomInterval(1, 0.015 * 1.3, 0.03 * 1.3);
+
+		case 960:
+			// Camera Movement | time: 75789.157895 | params: [1]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 992:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 1008:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.2);
+				}
+			});
+
+		case 1016:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.9);
+				}
+			});
+
+		case 1023:
+			camZoomInterval(1, 0.015 * 1.2, 0.03 * 1.2);
+
+		case 1024:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1088:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.9);
+				}
+			});
+
+		case 1152:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1216:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 1248:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.2);
+				}
+			});
+
+		case 1260:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 1264:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.3}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.3);
+				}
+			});
+
+		case 1276:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.2);
+				}
+			});
+
+		case 1280:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1312:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 1316:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1344:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 1348:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1408:
+			// Camera Position | time: 111157 | params: [-100,30,true,32,"expo","Out",true]
+			// Camera Movement | time: 111157 | params: [2,true,32,"expo","Out"]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.9);
+				}
+			});
+
+		case 1472:
+			// Camera Movement | time: 116210.526316 | params: [1]
+
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.95}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.95);
+				}
+			});
+
+		case 1504:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1516:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(0.9);
+				}
+			});
+
+		case 1520:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1.1);
+				}
+			});
+
+		case 1532:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+
+		case 1535:
+			camZoomInterval();
+
+		case 1536:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
+				onComplete: function(tween)
+				{
+					setDefaultCamZoom(1);
+				}
+			});
+		// Camera Movement | time: 121263.157895 | params: [0]
+
+		case 1568:
+			// Camera Movement | time: 123789.634146 | params: [1]
+
+		case 1600:
+			// Camera Movement | time: 126315.634146 | params: [0]
+
+		case 1632:
+			// Camera Movement | time: 128842.634146 | params: [1]
+	}
+}

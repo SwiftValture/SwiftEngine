@@ -1,0 +1,17 @@
+idle 0 0
+singLEFT 203 -50
+singDOWN 72 -177
+singUP -62 90
+singRIGHT -99 -62
+singLEFT-alt 186 -42
+singDOWN-alt -11 -251
+singUP-alt 60 96
+singRIGHT-alt 18 -81
+okay 0 0
+laugh -49 53
+funny1 136 -130
+funny2 136 -130
+funny3 136 -130
+dance1 56 -2
+idle-alt 62 7
+dance3 191 228

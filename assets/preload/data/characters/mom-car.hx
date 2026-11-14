@@ -1,0 +1,15 @@
+var tex = null;
+tex = Paths.getSparrowAtlas('characters/momCar');
+char.frames = tex;
+char.quickAnimAdd('idle', "Mom Idle");
+char.quickAnimAdd('singUP', "Mom Up Pose");
+char.quickAnimAdd('singDOWN', "MOM DOWN POSE");
+char.quickAnimAdd('singLEFT', 'Mom Left Pose');
+char.quickAnimAdd('singRIGHT', 'Mom Pose Left');
+char.animation.addByIndices('singUP-hold', "Mom Up Pose", [11, 12, 13, 14], "", 24, true);
+char.animation.addByIndices('singDOWN-hold', "MOM DOWN POSE", [11, 12, 13, 14], "", 24, true);
+char.animation.addByIndices('singLEFT-hold', "Mom Left Pose", [6, 7, 8, 9], "", 24, true);
+char.animation.addByIndices('singRIGHT-hold', "Mom Pose Left", [6, 7, 8, 9], "", 24, true);
+char.loadOffsetFile(char.curCharacter);
+char.playAnim('idle');
+char.holdTime = 6.1;
