@@ -1,6 +1,6 @@
 # Friday Night Funkin
 
-**Note: This readme has been updated to reflect the fixes made in this fork.**
+**Note: This readme has been updated to reflect the fixes made in this fork and the engine was made from this repo https://github.com/StrawberrySage/FunkinWeek7.**
 
 **TL;DR: Install hxCodec and update all haxe libraries.**
 
