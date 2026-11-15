@@ -40,8 +40,9 @@ class Main extends Sprite
 
 	private function onKeyDown(event:KeyboardEvent):Void
 	{
-		if (event.keyCode == Keyboard.F11)
-			Lib.application.window.fullscreen = !Lib.application.window.fullscreen;
+		#if !html5
+		Lib.application.window.fullscreen = !Lib.application.window.fullscreen;
+		#end
 
 		if (event.keyCode == Keyboard.F5)
 			FlxG.resetState();
