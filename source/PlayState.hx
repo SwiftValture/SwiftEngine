@@ -175,6 +175,9 @@ class PlayState extends MusicBeatState
 	var hideOpponentStrums:Bool = false;
 	var hideOpponentNotes:Bool = false;
 
+	var bpmEvents:Array<Song.BpmEvent> = [];
+	var bpmEventIdx:Int = -1;
+
 	override public function create()
 	{
 		FlxG.sound.cache(Paths.sound('scrollMenu'));
@@ -210,10 +213,16 @@ class PlayState extends MusicBeatState
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial');
 
+		Song.migrateCameraEvents(SONG);
+		Song.migrateBpmEvents(SONG);
+
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		Song.migrateCameraEvents(SONG);
+		bpmEvents = SONG.bpmEvents.copy();
+		Song.sortBpmEvents(bpmEvents);
+		bpmEventIdx = -1;
+
 		camEvents = SONG.cameraEvents.copy();
 		camEvents.sort(function(a, b) return Std.int(a.time - b.time));
 		camEventIdx = -1;
@@ -1086,6 +1095,7 @@ class PlayState extends MusicBeatState
 		cameraZoomTarget.zoom = defaultCamZoom;
 		setCamZoomInterval();
 		camEventIdx = -1;
+		bpmEventIdx = -1;
 		camTarget = 0;
 		cameraRightSide = false;
 		camScrollX = 0;
@@ -1238,6 +1248,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		updateBpmEvents();
+
 		if (FlxG.keys.justPressed.P)
 		{
 			endSong();
@@ -1354,7 +1366,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		#if debug
+		// #if debug
 		if (FlxG.keys.justPressed.SEVEN)
 		{
 			FlxG.switchState(new ChartingState());
@@ -1362,7 +1374,7 @@ class PlayState extends MusicBeatState
 			vocals.stop();
 			playerVocals.stop();
 		}
-		#end
+		// #end
 
 		if (FlxG.keys.justPressed.NINE)
 			iconP1.swapOldIcon();
@@ -1516,6 +1528,17 @@ class PlayState extends MusicBeatState
 
 		if (!paused && FlxG.camera.followLerp != camFollowLerp)
 			FlxG.camera.followLerp = camFollowLerp;
+	}
+
+	function updateBpmEvents():Void
+	{
+		while (bpmEventIdx + 1 < bpmEvents.length && bpmEvents[bpmEventIdx + 1].time <= Conductor.songPosition)
+		{
+			bpmEventIdx++;
+
+			if (bpmEvents[bpmEventIdx].bpm > 0)
+				Conductor.changeBPM(bpmEvents[bpmEventIdx].bpm);
+		}
 	}
 
 	function setFollowRate(value:Float):Void
@@ -2510,15 +2533,6 @@ class PlayState extends MusicBeatState
 		if (generatedMusic)
 		{
 			notes.sort(sortNotes, FlxSort.DESCENDING);
-		}
-
-		if (SONG.notes[Math.floor(curStep / 16)] != null)
-		{
-			if (SONG.notes[Math.floor(curStep / 16)].changeBPM)
-			{
-				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
-				FlxG.log.add('CHANGED BPM!');
-			}
 		}
 
 		if (camZoomPref)

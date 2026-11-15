@@ -25,6 +25,7 @@ import openfl.events.IOErrorEvent;
 import openfl.geom.Rectangle;
 import openfl.net.FileReference;
 import Song.CamEvent;
+import Song.BpmEvent;
 #if sys
 import sys.FileSystem;
 import sys.io.File;
@@ -64,6 +65,20 @@ class ChartingState extends MusicBeatState
 	var stepperCamX:FlxUINumericStepper;
 	var stepperCamY:FlxUINumericStepper;
 	var camSelTxt:FlxText;
+
+	var BPM_X:Int = 0;
+	var BPM_W:Int = 44;
+	var bpmRendered:FlxTypedGroup<FlxSprite>;
+	var curSelectedBpm:BpmEvent = null;
+	var bpmValue:Float = 120;
+	var updatingBpmUI:Bool = false;
+	var stepperBpmEvent:FlxUINumericStepper;
+	var bpmSelTxt:FlxText;
+
+	var segTimes:Array<Float> = [0];
+	var segSteps:Array<Float> = [0];
+	var segStepMs:Array<Float> = [125];
+	var segBpm:Array<Float> = [120];
 
 	var strumSprites:Array<FlxSprite> = [];
 	var strumLit:Array<Bool> = [];
@@ -179,7 +194,8 @@ class ChartingState extends MusicBeatState
 		+ "Ctrl+Z / Ctrl+Y: undo / redo | Ctrl+S: save\n"
 		+ "Enter: playtest | R: section start (Shift = song start)\n"
 		+ "Camera lane (right of grid): click = new event / change target, right click = remove, 1/2/3 = Dad/BF/GF\n"
-		+ "Ctrl+Click on a camera event: select it, then set ease / duration / offset in the Camera tab\n";
+		+ "Ctrl+Click on a camera event: select it, then set ease / duration / offset in the Camera tab\n"
+		+ "BPM lane (left of grid): click = new BPM event / select, right click = remove, value in the BPM tab\n";
 
 	override function create()
 	{
@@ -187,6 +203,7 @@ class ChartingState extends MusicBeatState
 		CHUNK_H = GRID_SIZE * 16;
 		GRID_X = Std.int((FlxG.width / 2 - GRID_W) / 2);
 		CAM_X = GRID_X + GRID_W + 6;
+		BPM_X = GRID_X - 6 - BPM_W;
 
 		altAnimTexts = new FlxTypedGroup<FlxText>();
 
@@ -214,6 +231,8 @@ class ChartingState extends MusicBeatState
 			addSection();
 
 		Song.migrateCameraEvents(_song);
+		Song.migrateBpmEvents(_song);
+		bpmValue = _song.bpm;
 
 		rebuildTempo();
 		Conductor.changeBPM(_song.bpm);
@@ -230,7 +249,7 @@ class ChartingState extends MusicBeatState
 			add(line);
 			markerLines.push(line);
 
-			var label:FlxText = new FlxText(6, 0, GRID_X - 12, "", 12);
+			var label:FlxText = new FlxText(6, 0, BPM_X - 12, "", 10);
 			label.color = 0xFF94A3B8;
 			label.visible = false;
 			add(label);
@@ -287,6 +306,19 @@ class ChartingState extends MusicBeatState
 		camRendered = new FlxTypedGroup<FlxSprite>();
 		add(camRendered);
 
+		var bpmBg:FlxSprite = new FlxSprite(BPM_X, 0).makeGraphic(BPM_W, FlxG.height, 0xAA0F172A);
+		bpmBg.scrollFactor.set();
+		add(bpmBg);
+
+		var bpmLabel:FlxText = new FlxText(BPM_X - 4, 0, BPM_W + 8, "BPM", 10);
+		bpmLabel.color = 0xFF94A3B8;
+		bpmLabel.alignment = CENTER;
+		bpmLabel.scrollFactor.set();
+		add(bpmLabel);
+
+		bpmRendered = new FlxTypedGroup<FlxSprite>();
+		add(bpmRendered);
+
 		add(leftIcon);
 		add(rightIcon);
 
@@ -304,7 +336,8 @@ class ChartingState extends MusicBeatState
 			{name: "Song", label: 'Song'},
 			{name: "Section", label: 'Section'},
 			{name: "Note", label: 'Note'},
-			{name: "Camera", label: 'Camera'}
+			{name: "Camera", label: 'Camera'},
+			{name: "BPM", label: 'BPM'}
 		];
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
@@ -318,6 +351,7 @@ class ChartingState extends MusicBeatState
 		addSectionUI();
 		addNoteUI();
 		addCameraUI();
+		addBpmUI();
 
 		if (lastSection > 0 && lastSection < _song.notes.length)
 			seek(secTimes[lastSection]);
@@ -344,32 +378,54 @@ class ChartingState extends MusicBeatState
 
 	function rebuildTempo():Void
 	{
+		if (_song.bpmEvents == null)
+			_song.bpmEvents = [];
+
+		Song.sortBpmEvents(_song.bpmEvents);
+
+		segTimes = [0];
+		segSteps = [0];
+		segStepMs = [15000 / _song.bpm];
+		segBpm = [_song.bpm];
+
+		for (ev in _song.bpmEvents)
+		{
+			if (ev.bpm <= 0)
+				continue;
+
+			var last:Int = segTimes.length - 1;
+
+			if (ev.time <= segTimes[last])
+			{
+				segStepMs[last] = 15000 / ev.bpm;
+				segBpm[last] = ev.bpm;
+				continue;
+			}
+
+			segSteps.push(segSteps[last] + (ev.time - segTimes[last]) / segStepMs[last]);
+			segTimes.push(ev.time);
+			segStepMs.push(15000 / ev.bpm);
+			segBpm.push(ev.bpm);
+		}
+
 		secTimes = [];
 		secSteps = [];
 		secStepMs = [];
 
-		var t:Float = 0;
 		var s:Float = 0;
-		var bpm:Float = _song.bpm;
 
 		for (sec in _song.notes)
 		{
-			if (sec.changeBPM && sec.bpm > 0)
-				bpm = sec.bpm;
-
-			var ms:Float = 15000 / bpm;
-
-			secTimes.push(t);
 			secSteps.push(s);
-			secStepMs.push(ms);
+			secTimes.push(stepToTime(s));
+			secStepMs.push(segStepMs[segAtStep(s)]);
 
-			t += sec.lengthInSteps * ms;
 			s += sec.lengthInSteps;
 		}
 
-		endTime = t;
 		endStep = s;
-		lastBpm = bpm;
+		endTime = stepToTime(s);
+		lastBpm = segBpm[segBpm.length - 1];
 	}
 
 	function tempoChanged():Void
@@ -382,8 +438,9 @@ class ChartingState extends MusicBeatState
 
 	function applyConductorBPM():Void
 	{
-		if (curSection >= 0 && curSection < secStepMs.length)
-			Conductor.changeBPM(15000 / secStepMs[curSection]);
+		var b:Float = bpmAtTime(FlxG.sound.music.time);
+		if (b != Conductor.bpm)
+			Conductor.changeBPM(b);
 	}
 
 	function sectionAtTime(t:Float):Int
@@ -416,16 +473,51 @@ class ChartingState extends MusicBeatState
 		return lo;
 	}
 
+	function segAtTime(t:Float):Int
+	{
+		var lo:Int = 0;
+		var hi:Int = segTimes.length - 1;
+		while (lo < hi)
+		{
+			var mid:Int = (lo + hi + 1) >> 1;
+			if (segTimes[mid] <= t)
+				lo = mid;
+			else
+				hi = mid - 1;
+		}
+		return lo;
+	}
+
+	function segAtStep(st:Float):Int
+	{
+		var lo:Int = 0;
+		var hi:Int = segSteps.length - 1;
+		while (lo < hi)
+		{
+			var mid:Int = (lo + hi + 1) >> 1;
+			if (segSteps[mid] <= st)
+				lo = mid;
+			else
+				hi = mid - 1;
+		}
+		return lo;
+	}
+
+	function bpmAtTime(t:Float):Float
+	{
+		return segBpm[segAtTime(t)];
+	}
+
 	function timeToStep(t:Float):Float
 	{
-		var i:Int = sectionAtTime(t);
-		return secSteps[i] + (t - secTimes[i]) / secStepMs[i];
+		var i:Int = segAtTime(t);
+		return segSteps[i] + (t - segTimes[i]) / segStepMs[i];
 	}
 
 	function stepToTime(st:Float):Float
 	{
-		var i:Int = sectionAtStep(st);
-		return secTimes[i] + (st - secSteps[i]) * secStepMs[i];
+		var i:Int = segAtStep(st);
+		return segTimes[i] + (st - segSteps[i]) * segStepMs[i];
 	}
 
 	function timeToY(t:Float):Float
@@ -523,9 +615,6 @@ class ChartingState extends MusicBeatState
 			line.y = y - 1;
 
 			var txt:String = "Section " + i + "\nLanes: " + (sec.mustHitSection ? _song.player1 : _song.player2);
-			if (sec.changeBPM)
-				txt += "\nBPM " + sec.bpm;
-
 			var label:FlxText = markerLabels[count];
 			label.visible = true;
 			label.y = y - 1;
@@ -560,6 +649,7 @@ class ChartingState extends MusicBeatState
 		wipe(curRenderedSustains);
 		wipe(altAnimTexts);
 		wipe(camRendered);
+		wipe(bpmRendered);
 		noteLookup.clear();
 		noteSecLookup.clear();
 
@@ -627,6 +717,29 @@ class ChartingState extends MusicBeatState
 				if (type == 2 && arr != curSelectedNote)
 					note.alpha = 0.5;
 			}
+		}
+
+		for (ev in _song.bpmEvents)
+		{
+			if (ev.time > tMax || ev.time < tMin)
+				continue;
+
+			var bY:Float = Math.floor(timeToStep(ev.time) * GRID_SIZE);
+
+			if (ev == curSelectedBpm)
+			{
+				var bOutline:FlxSprite = new FlxSprite(BPM_X - 2, bY - 1).makeGraphic(BPM_W + 4, GRID_SIZE, 0xFFFACC15);
+				bpmRendered.add(bOutline);
+			}
+
+			var bSpr:FlxSprite = new FlxSprite(BPM_X, bY).makeGraphic(BPM_W, GRID_SIZE - 2, 0xFFF59E0B);
+			bSpr.alpha = 0.9;
+			bpmRendered.add(bSpr);
+
+			var bTxt:FlxText = new FlxText(BPM_X, bY + 6, BPM_W, Std.string(FlxMath.roundDecimal(ev.bpm, 2)), 10);
+			bTxt.color = 0xFF111827;
+			bTxt.alignment = CENTER;
+			bpmRendered.add(bTxt);
 		}
 
 		for (ev in _song.cameraEvents)
@@ -821,7 +934,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperSpeed);
 		tab_group_song.add(stepperRate);
 
-		var txtBpm = new FlxText(stepperBPM.x + 70, stepperBPM.y, 0, "BPM", 8);
+		var txtBpm = new FlxText(stepperBPM.x + 70, stepperBPM.y, 0, "Start BPM", 8);
 		txtBpm.color = 0xFFE2E8F0;
 		tab_group_song.add(txtBpm);
 		var txtSpd = new FlxText(stepperSpeed.x + 70, stepperSpeed.y, 0, "Scroll speed", 8);
@@ -846,8 +959,6 @@ class ChartingState extends MusicBeatState
 
 	var stepperLength:FlxUINumericStepper;
 	var check_mustHitSection:FlxUICheckBox;
-	var check_changeBPM:FlxUICheckBox;
-	var stepperSectionBPM:FlxUINumericStepper;
 	var check_altAnim:FlxUICheckBox;
 
 	function addSectionUI():Void
@@ -859,11 +970,6 @@ class ChartingState extends MusicBeatState
 		stepperLength.value = 16;
 		stepperLength.name = "section_length";
 		steppers.push(stepperLength);
-
-		stepperSectionBPM = new FlxUINumericStepper(10, 80, 1, _song.bpm, 1, 999, 3);
-		stepperSectionBPM.value = _song.bpm;
-		stepperSectionBPM.name = 'section_bpm';
-		steppers.push(stepperSectionBPM);
 
 		var stepperCopy:FlxUINumericStepper = new FlxUINumericStepper(110, 130, 1, 1, 1, 999, 0);
 		steppers.push(stepperCopy);
@@ -894,18 +1000,13 @@ class ChartingState extends MusicBeatState
 		check_altAnim = new FlxUICheckBox(10, 105, null, null, "Alt Animation", 100);
 		check_altAnim.name = 'check_altAnim';
 
-		check_changeBPM = new FlxUICheckBox(10, 60, null, null, 'Change BPM', 100);
-		check_changeBPM.name = 'check_changeBPM';
-
 		tab_group_section.add(stepperLength);
 		var txtLen = new FlxText(stepperLength.x + 70, stepperLength.y, 0, "Length (steps)", 8);
 		txtLen.color = 0xFFE2E8F0;
 		tab_group_section.add(txtLen);
-		tab_group_section.add(stepperSectionBPM);
 		tab_group_section.add(stepperCopy);
 		tab_group_section.add(check_mustHitSection);
 		tab_group_section.add(check_altAnim);
-		tab_group_section.add(check_changeBPM);
 		tab_group_section.add(copyButton);
 		tab_group_section.add(clearSectionButton);
 		tab_group_section.add(swapSection);
@@ -1034,6 +1135,68 @@ class ChartingState extends MusicBeatState
 		updateCamUI();
 	}
 
+	function addBpmUI():Void
+	{
+		var tab_group_bpm = new FlxUI(null, UI_box);
+		tab_group_bpm.name = 'BPM';
+
+		bpmSelTxt = new FlxText(10, 10, 280, "", 8);
+		bpmSelTxt.color = 0xFFE2E8F0;
+
+		stepperBpmEvent = new FlxUINumericStepper(10, 60, 1, bpmValue, 1, 999, 3);
+		stepperBpmEvent.value = bpmValue;
+		stepperBpmEvent.name = 'bpm_value';
+		steppers.push(stepperBpmEvent);
+
+		var txtBpmVal = new FlxText(stepperBpmEvent.x + 70, stepperBpmEvent.y, 0, "BPM", 8);
+		txtBpmVal.color = 0xFFE2E8F0;
+
+		var deleteBpmBtn:FlxButton = new FlxButton(10, 90, "Delete selected", function()
+		{
+			if (curSelectedBpm != null)
+			{
+				_song.bpmEvents.remove(curSelectedBpm);
+				curSelectedBpm = null;
+				updateBpmUI();
+				tempoChanged();
+				autosaveSong();
+			}
+		});
+
+		var txtBpmInfo = new FlxText(10, 125, 280,
+			"BPM lane (left of the grid): click = new BPM event (uses the value above) or select, right click = remove. " +
+			"The BPM at the start of the song is set in the Song tab. Events are placed on whole steps.",
+			8);
+		txtBpmInfo.color = 0xFF94A3B8;
+
+		tab_group_bpm.add(bpmSelTxt);
+		tab_group_bpm.add(stepperBpmEvent);
+		tab_group_bpm.add(txtBpmVal);
+		tab_group_bpm.add(deleteBpmBtn);
+		tab_group_bpm.add(txtBpmInfo);
+
+		UI_box.addGroup(tab_group_bpm);
+
+		updateBpmUI();
+	}
+
+	function updateBpmUI():Void
+	{
+		updatingBpmUI = true;
+
+		if (curSelectedBpm != null)
+		{
+			bpmValue = curSelectedBpm.bpm;
+			bpmSelTxt.text = "Selected: " + curSelectedBpm.bpm + " BPM @ " + FlxMath.roundDecimal(curSelectedBpm.time, 1) + " ms";
+		}
+		else
+			bpmSelTxt.text = "No BPM event selected. Click in the BPM lane to add one.";
+
+		stepperBpmEvent.value = bpmValue;
+
+		updatingBpmUI = false;
+	}
+
 	function setCamEventMode(ev:CamEvent):Void
 	{
 		if (camEaseName == Song.CAM_CLASSIC)
@@ -1107,10 +1270,6 @@ class ChartingState extends MusicBeatState
 					updateHeads();
 					dirtyNotes = true;
 
-				case 'Change BPM':
-					_song.notes[curSection].changeBPM = check.checked;
-					tempoChanged();
-
 				case "Alt Animation":
 					_song.notes[curSection].altAnim = check.checked;
 
@@ -1175,12 +1334,18 @@ class ChartingState extends MusicBeatState
 					applyCamUI();
 				}
 			}
-			else if (wname == 'section_bpm')
+			else if (wname == 'bpm_value')
 			{
-				if (_song.notes[curSection].bpm != nums.value)
+				if (!updatingBpmUI && nums.value > 0)
 				{
-					_song.notes[curSection].bpm = nums.value;
-					tempoChanged();
+					bpmValue = nums.value;
+
+					if (curSelectedBpm != null)
+					{
+						curSelectedBpm.bpm = nums.value;
+						tempoChanged();
+						autosaveSong();
+					}
 				}
 			}
 		}
@@ -1193,8 +1358,6 @@ class ChartingState extends MusicBeatState
 		stepperLength.value = sec.lengthInSteps;
 		check_mustHitSection.checked = sec.mustHitSection;
 		check_altAnim.checked = sec.altAnim;
-		check_changeBPM.checked = sec.changeBPM;
-		stepperSectionBPM.value = sec.bpm;
 
 		updateHeads();
 	}
@@ -1760,6 +1923,8 @@ class ChartingState extends MusicBeatState
 			updateSectionUI();
 		}
 
+		applyConductorBPM();
+
 		curStep = Std.int(Math.floor(Math.max(0, timeToStep(songPos))));
 		updateBeat();
 
@@ -1850,6 +2015,60 @@ class ChartingState extends MusicBeatState
 			else if (FlxG.mouse.justPressed && mouseInGrid(mx, my))
 			{
 				addNote(mx, my);
+			}
+		}
+
+		if ((FlxG.mouse.justPressed || FlxG.mouse.justPressedRight)
+			&& mx >= BPM_X
+			&& mx < BPM_X + BPM_W
+			&& my >= 0
+			&& my < songEndY)
+		{
+			var hitBpm:BpmEvent = null;
+			for (bev in _song.bpmEvents)
+			{
+				var bevY:Float = timeToY(bev.time);
+				if (my >= bevY && my < bevY + GRID_SIZE)
+				{
+					hitBpm = bev;
+					break;
+				}
+			}
+
+			if (FlxG.mouse.justPressedRight)
+			{
+				if (hitBpm != null)
+				{
+					_song.bpmEvents.remove(hitBpm);
+					if (curSelectedBpm == hitBpm)
+						curSelectedBpm = null;
+					updateBpmUI();
+					tempoChanged();
+					autosaveSong();
+				}
+			}
+			else if (hitBpm != null)
+			{
+				curSelectedBpm = hitBpm;
+				updateBpmUI();
+				dirtyNotes = true;
+				showStatus("BPM event selected (BPM tab)");
+			}
+			else
+			{
+				var bpmTime:Float = FlxMath.roundDecimal(stepToTime(Math.floor(my / GRID_SIZE)), 3);
+
+				if (bpmTime <= 0)
+					showStatus("Start BPM is set in the Song tab");
+				else
+				{
+					var newBpmEv:BpmEvent = {time: bpmTime, bpm: bpmValue};
+					_song.bpmEvents.push(newBpmEv);
+					curSelectedBpm = newBpmEv;
+					updateBpmUI();
+					tempoChanged();
+					autosaveSong();
+				}
 			}
 		}
 
@@ -1971,12 +2190,12 @@ class ChartingState extends MusicBeatState
 				{
 					UI_box.selected_tab -= 1;
 					if (UI_box.selected_tab < 0)
-						UI_box.selected_tab = 3;
+						UI_box.selected_tab = 4;
 				}
 				else
 				{
 					UI_box.selected_tab += 1;
-					if (UI_box.selected_tab >= 4)
+					if (UI_box.selected_tab >= 5)
 						UI_box.selected_tab = 0;
 				}
 			}
