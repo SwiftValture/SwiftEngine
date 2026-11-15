@@ -1365,7 +1365,6 @@ class PlayState extends MusicBeatState
 				boyfriendPos.put();
 			}
 		}
-
 		// #if debug
 		if (FlxG.keys.justPressed.SEVEN)
 		{
