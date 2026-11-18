@@ -147,6 +147,7 @@ class PlayState extends MusicBeatState
 	var defaultCamZoom:Float = 1.05;
 	var cameraZoomTarget:{zoom:Float} = {zoom: 1.05};
 	var cameraBopZoom:Float = 0;
+	var lastCamZoom:Float = -1;
 
 	public static var daPixelZoom:Float = 6;
 
@@ -540,6 +541,7 @@ class PlayState extends MusicBeatState
 		scripts.set('camHUD', camHUD);
 		scripts.set('comboGroup', comboGroup);
 		scripts.set('defaultCamZoom', defaultCamZoom);
+		scripts.set('cameraBopZoom', cameraBopZoom);
 		scripts.set('setScrollSpeed', function(value:Float)
 		{
 			noteScrollSpeed = value * 0.45;
@@ -1414,7 +1416,11 @@ class PlayState extends MusicBeatState
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, factor);
 		}
 
+		if (lastCamZoom >= 0)
+			cameraBopZoom += FlxG.camera.zoom - lastCamZoom;
+
 		FlxG.camera.zoom = cameraZoomTarget.zoom + cameraBopZoom;
+		lastCamZoom = FlxG.camera.zoom;
 
 		#if debug
 		FlxG.watch.addQuick("followLerp", FlxG.camera.followLerp);
