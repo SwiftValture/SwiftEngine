@@ -62,6 +62,7 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
+		SongPreloader.startAll();
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
 		Highscore.load();

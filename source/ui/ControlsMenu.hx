@@ -16,6 +16,12 @@ import ui.TextMenuList;
 class ControlsMenu extends ui.OptionsState.Page
 {
 	inline static public var COLUMNS = 2;
+	inline static var PROMPT_DELAY = 0.35;
+
+	var binding = false;
+	var promptTimer = 0.0;
+	var skipFrame = false;
+
 	static var controlList = Control.createAll();
 	/*
 	 * Defines groups of controls that cannot share inputs, like left and right. Say, if ACCEPT is Z, Back is X,
@@ -155,7 +161,9 @@ class ControlsMenu extends ui.OptionsState.Page
 	{
 		controlGrid.enabled = false;
 		canExit = false;
-		prompt.exists = true;
+		binding = true;
+		skipFrame = true;
+		promptTimer = PROMPT_DELAY;
 	}
 
 	function goToDeviceList()
@@ -200,31 +208,42 @@ class ControlsMenu extends ui.OptionsState.Page
 		if (controlGrid.enabled && deviceList != null && deviceListSelected == false && controls.BACK)
 			goToDeviceList();
 
-		if (prompt.exists)
+		if (binding)
 		{
-			switch (currentDevice)
+			if (skipFrame)
+				skipFrame = false;
+			else
 			{
-				case Keys:
-					{
-						// check released otherwise bugs can happen when you change the BACK key
-						var key = FlxG.keys.firstJustReleased();
-						if (key != NONE)
+				if (!prompt.exists)
+				{
+					promptTimer -= elapsed;
+					if (promptTimer <= 0)
+						prompt.exists = true;
+				}
+
+				switch (currentDevice)
+				{
+					case Keys:
 						{
-							if (key != ESCAPE)
-								onInputSelect(key);
-							closePrompt();
+							var key = FlxG.keys.firstJustPressed();
+							if (key != NONE)
+							{
+								if (key != ESCAPE)
+									onInputSelect(key);
+								closePrompt();
+							}
 						}
-					}
-				case Gamepad(id):
-					{
-						var button = FlxG.gamepads.getByID(id).firstJustReleasedID();
-						if (button != NONE)
+					case Gamepad(id):
 						{
-							if (button != BACK)
-								onInputSelect(button);
-							closePrompt();
+							var button = FlxG.gamepads.getByID(id).firstJustPressedID();
+							if (button != NONE)
+							{
+								if (button != BACK)
+									onInputSelect(button);
+								closePrompt();
+							}
 						}
-					}
+				}
 			}
 		}
 	}
@@ -270,6 +289,7 @@ class ControlsMenu extends ui.OptionsState.Page
 
 	function closePrompt()
 	{
+		binding = false;
 		prompt.exists = false;
 		controlGrid.enabled = true;
 		if (deviceList == null)
@@ -319,6 +339,7 @@ class InputItem extends TextMenuItem
 		this.input = getInput();
 
 		super(x, y, getLabel(input), Default, callback);
+		fireInstantly = true;
 	}
 
 	public function updateDevice(device:Device)
@@ -340,7 +361,6 @@ class InputItem extends TextMenuItem
 				return list[index];
 
 			if (list.length > ControlsMenu.COLUMNS)
-				// Escape isn't mappable, show a third option, instead.
 				return list[ControlsMenu.COLUMNS];
 		}
 

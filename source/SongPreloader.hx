@@ -12,7 +12,7 @@ class SongPreloader
 	public static var loaded:Int = 0;
 	public static var total:Int = 0;
 
-	public static function start(songs:Array<{name:String, diffs:Array<String>}>):Void
+	public static function startAll():Void
 	{
 		if (started)
 			return;
@@ -20,27 +20,27 @@ class SongPreloader
 
 		var paths:Array<String> = [];
 
-		for (s in songs)
+		for (id in Assets.list())
 		{
-			var variants:Array<String> = [s.name];
+			var parts:Array<String> = id.split('/');
+			if (parts.length < 3)
+				continue;
 
-			for (d in s.diffs)
-			{
-				if (d == 'erect' || d == 'nightmare')
-					variants.push(s.name + '-erect');
-				else if (d == 'unreleased')
-					variants.push(s.name + '-unreleased');
-			}
+			var file:String = parts[parts.length - 1].toLowerCase();
+			if (!StringTools.startsWith(file, 'inst') || parts[parts.length - 3] != 'songs')
+				continue;
 
-			for (v in variants)
-			{
-				var p:String = Paths.inst(v);
-				if (paths.indexOf(p) == -1 && Assets.exists(p))
-					paths.push(p);
-			}
+			var name:String = parts[parts.length - 2];
+			var p:String = Paths.inst(name);
+
+			if (paths.indexOf(p) == -1 && Assets.exists(p))
+				paths.push(p);
 		}
 
 		total = paths.length;
+		trace('SongPreloader: ' + total + ' Insts gefunden');
+		for (p in paths)
+			trace('  ' + p);
 
 		#if sys
 		Thread.create(function()
@@ -49,11 +49,16 @@ class SongPreloader
 			{
 				try
 				{
-					Assets.getSound(p);
+					var snd = Assets.getSound(p);
+					trace('geladen: ' + p + ' -> ' + (snd != null));
 				}
-				catch (e:Dynamic) {}
+				catch (e:Dynamic)
+				{
+					trace('FEHLER bei ' + p + ': ' + e);
+				}
 				loaded++;
 			}
+			trace('SongPreloader fertig');
 		});
 		#else
 		for (p in paths)

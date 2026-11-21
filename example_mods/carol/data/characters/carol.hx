@@ -1,0 +1,15 @@
+var tex = null;
+tex = Paths.getSparrowAtlas('characters/carol');
+char.frames = tex;
+char.quickAnimAdd('singLEFT', 'Dad Sing Note LEFT');
+char.quickAnimAdd('singRIGHT', 'Dad Sing Note RIGHT');
+char.quickAnimAdd('singUP', 'Dad Sing Note UP');
+char.quickAnimAdd('singDOWN', 'Dad Sing Note DOWN');
+char.animation.addByIndices('danceLeft', 'Dad idle dance', [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24], "", 24, false);
+char.animation.addByIndices('danceRight', 'Dad idle dance', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+char.loadOffsetFile(char.curCharacter);
+char.playAnim('danceRight');
+char.holdTime = 6.1;
+char.healthIcon = 'carol';
+char.danceSides = true;
+char.danceInterval = 1;

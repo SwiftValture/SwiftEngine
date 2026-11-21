@@ -42,6 +42,8 @@ function create()
 	stage.limo = limo;
 
 	fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
+
+	// PlayState.windyCombo = true;
 }
 
 function positionCharacters(dad, gf, boyfriend, gfName)

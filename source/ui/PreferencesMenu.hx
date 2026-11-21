@@ -324,6 +324,14 @@ class PreferencesMenu extends ui.OptionsState.Page
 		}
 	}
 
+	override function destroy()
+	{
+		super.destroy();
+
+		if (FlxG.cameras.list.contains(menuCamera))
+			FlxG.cameras.remove(menuCamera);
+	}
+
 	private static function preferenceCheck(prefString:String, prefValue:Dynamic):Void
 	{
 		if (preferences.get(prefString) == null)

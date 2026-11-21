@@ -42,6 +42,8 @@ class Character extends FlxAnimate
 
 	public var danceSides:Bool = false;
 
+	public var danceInterval:Int = -1;
+
 	public var noDance:Bool = false;
 
 	public var noDanceOverAnim:String = null;
@@ -77,7 +79,6 @@ class Character extends FlxAnimate
 			if (curCharacter != 'bf')
 				flipX = !flipX;
 
-			// Doesn't flip for BF, since his are already in the right place???
 			if (!curCharacter.startsWith('bf') && !isAdobeCharacter)
 			{
 				for (suffix in ['', 'miss', HOLD_SUFFIX, 'miss' + HOLD_SUFFIX, END_SUFFIX])

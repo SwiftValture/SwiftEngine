@@ -19,10 +19,18 @@ class ComboGroup extends FlxSpriteGroup
 		var rating:FlxSprite = new FlxSprite().loadGraphic(Paths.image(path));
 		rating.x = -40;
 		rating.y = -60;
-		rating.acceleration.y = 550;
-		rating.velocity.y -= FlxG.random.int(140, 175);
-		rating.velocity.x -= FlxG.random.int(0, 10);
-
+		if (PlayState.windyCombo)
+		{
+			rating.acceleration.y = 550;
+			rating.velocity.y = -FlxG.random.int(40, 70);
+			rating.velocity.x = FlxG.random.int(450, 550);
+		}
+		else
+		{
+			rating.acceleration.y = 550;
+			rating.velocity.y -= FlxG.random.int(140, 175);
+			rating.velocity.x -= FlxG.random.int(0, 10);
+		}
 		if (pixel)
 			rating.setGraphicSize(Std.int(rating.width * PlayState.daPixelZoom * 0.7));
 		else
@@ -72,9 +80,18 @@ class ComboGroup extends FlxSpriteGroup
 			}
 			numScore.updateHitbox();
 
-			numScore.acceleration.y = FlxG.random.int(200, 300);
-			numScore.velocity.y -= FlxG.random.int(140, 160);
-			numScore.velocity.x = FlxG.random.float(-5, 5);
+			if (PlayState.windyCombo)
+			{
+				numScore.acceleration.y = 550;
+				numScore.velocity.y = -FlxG.random.int(40, 70);
+				numScore.velocity.x = FlxG.random.int(450, 550);
+			}
+			else
+			{
+				numScore.acceleration.y = FlxG.random.int(200, 300);
+				numScore.velocity.y -= FlxG.random.int(140, 160);
+				numScore.velocity.x = FlxG.random.float(-5, 5);
+			}
 
 			addPart(numScore);
 

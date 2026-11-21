@@ -169,8 +169,6 @@ class FreeplayState extends MusicBeatState
 		dataText.alpha = 0;
 		add(dataText);
 
-		SongPreloader.start([for (s in songs) {name: s.songName, diffs: s.diffs}]);
-
 		super.create();
 	}
 

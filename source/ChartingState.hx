@@ -26,6 +26,7 @@ import openfl.geom.Rectangle;
 import openfl.net.FileReference;
 import Song.CamEvent;
 import Song.BpmEvent;
+import ZoomScript.ZoomEvent;
 #if sys
 import sys.FileSystem;
 import sys.io.File;
@@ -75,6 +76,35 @@ class ChartingState extends MusicBeatState
 	var stepperBpmEvent:FlxUINumericStepper;
 	var bpmSelTxt:FlxText;
 
+	var ZOOM_X:Int = 0;
+	var ZOOM_W:Int = 44;
+	var zoomRendered:FlxTypedGroup<FlxSprite>;
+	var zoomScript:ZoomScript = new ZoomScript();
+	var zoomPaths:Array<String> = [];
+	var zoomBackedUp:Array<String> = [];
+	var zoomWritable:Bool = false;
+	var zoomDirty:Bool = false;
+	var curSelectedZoom:ZoomEvent = null;
+	var updatingZoomUI:Bool = false;
+	var zoomStepVal:Int = 0;
+	var zoomHasZoom:Bool = true;
+	var zoomValue:Float = 0.8;
+	var zoomDur:Float = 8;
+	var zoomEaseName:String = "expoOut";
+	var zoomHasMod:Bool = false;
+	var zoomInterval:Int = 4;
+	var zoomMult:Float = 1;
+	var zoomSelTxt:FlxText;
+	var zoomPathTxt:FlxText;
+	var stepperZoomStep:FlxUINumericStepper;
+	var stepperZoomValue:FlxUINumericStepper;
+	var stepperZoomDur:FlxUINumericStepper;
+	var stepperZoomInterval:FlxUINumericStepper;
+	var stepperZoomMult:FlxUINumericStepper;
+	var check_zoomHasZoom:FlxUICheckBox;
+	var check_zoomHasMod:FlxUICheckBox;
+	var dropZoomEase:FlxUIDropDownMenu;
+
 	var segTimes:Array<Float> = [0];
 	var segSteps:Array<Float> = [0];
 	var segStepMs:Array<Float> = [125];
@@ -90,6 +120,30 @@ class ChartingState extends MusicBeatState
 
 	static var CAM_EASES:Array<String> = [
 		"CLASSIC",
+		"INSTANT",
+		"linear",
+		"quadIn",
+		"quadOut",
+		"quadInOut",
+		"cubeIn",
+		"cubeOut",
+		"cubeInOut",
+		"sineIn",
+		"sineOut",
+		"sineInOut",
+		"expoIn",
+		"expoOut",
+		"expoInOut",
+		"smoothStepIn",
+		"smoothStepOut",
+		"smoothStepInOut",
+		"smootherStepInOut",
+		"backOut",
+		"elasticOut",
+		"bounceOut"
+	];
+
+	static var ZOOM_EASES:Array<String> = [
 		"INSTANT",
 		"linear",
 		"quadIn",
@@ -195,7 +249,8 @@ class ChartingState extends MusicBeatState
 		+ "Enter: playtest | R: section start (Shift = song start)\n"
 		+ "Camera lane (right of grid): click = new event / change target, right click = remove, 1/2/3 = Dad/BF/GF\n"
 		+ "Ctrl+Click on a camera event: select it, then set ease / duration / offset in the Camera tab\n"
-		+ "BPM lane (left of grid): click = new BPM event / select, right click = remove, value in the BPM tab\n";
+		+ "BPM lane (left of grid): click = new BPM event / select, right click = remove, value in the BPM tab\n"
+		+ "Zoom lane (right of camera lane): click = new zoom event / select, right click = remove, values in the Zoom tab (writes events.hx on save)\n";
 
 	override function create()
 	{
@@ -204,6 +259,7 @@ class ChartingState extends MusicBeatState
 		GRID_X = Std.int((FlxG.width / 2 - GRID_W) / 2);
 		CAM_X = GRID_X + GRID_W + 6;
 		BPM_X = GRID_X - 6 - BPM_W;
+		ZOOM_X = CAM_X + CAM_W + 6;
 
 		altAnimTexts = new FlxTypedGroup<FlxText>();
 
@@ -319,6 +375,19 @@ class ChartingState extends MusicBeatState
 		bpmRendered = new FlxTypedGroup<FlxSprite>();
 		add(bpmRendered);
 
+		var zoomBg:FlxSprite = new FlxSprite(ZOOM_X, 0).makeGraphic(ZOOM_W, FlxG.height, 0xAA0F172A);
+		zoomBg.scrollFactor.set();
+		add(zoomBg);
+
+		var zoomLabel:FlxText = new FlxText(ZOOM_X - 4, 0, ZOOM_W + 8, "Zoom", 10);
+		zoomLabel.color = 0xFF94A3B8;
+		zoomLabel.alignment = CENTER;
+		zoomLabel.scrollFactor.set();
+		add(zoomLabel);
+
+		zoomRendered = new FlxTypedGroup<FlxSprite>();
+		add(zoomRendered);
+
 		add(leftIcon);
 		add(rightIcon);
 
@@ -332,12 +401,15 @@ class ChartingState extends MusicBeatState
 		statusTxt.color = 0xFF38BDF8;
 		add(statusTxt);
 
+		loadZoomScript();
+
 		var tabs = [
 			{name: "Song", label: 'Song'},
 			{name: "Section", label: 'Section'},
 			{name: "Note", label: 'Note'},
 			{name: "Camera", label: 'Camera'},
-			{name: "BPM", label: 'BPM'}
+			{name: "BPM", label: 'BPM'},
+			{name: "Zoom", label: 'Zoom'}
 		];
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
@@ -352,6 +424,7 @@ class ChartingState extends MusicBeatState
 		addNoteUI();
 		addCameraUI();
 		addBpmUI();
+		addZoomUI();
 
 		if (lastSection > 0 && lastSection < _song.notes.length)
 			seek(secTimes[lastSection]);
@@ -650,6 +723,7 @@ class ChartingState extends MusicBeatState
 		wipe(altAnimTexts);
 		wipe(camRendered);
 		wipe(bpmRendered);
+		wipe(zoomRendered);
 		noteLookup.clear();
 		noteSecLookup.clear();
 
@@ -781,6 +855,58 @@ class ChartingState extends MusicBeatState
 				easeTxt.color = 0xFFE2E8F0;
 				easeTxt.alignment = CENTER;
 				camRendered.add(easeTxt);
+			}
+		}
+
+		var sMin:Float = timeToStep(tMin);
+		var sMax:Float = timeToStep(tMax);
+
+		for (zev in zoomScript.events)
+		{
+			var zDur:Float = (zev.hasZoom && zev.ease != "INSTANT" && !zev.durIsSec) ? zev.dur : 0;
+
+			if (zev.step > sMax || zev.step + zDur < sMin)
+				continue;
+
+			var zY:Float = zev.step * GRID_SIZE;
+			var zCol:Int = zev.hasZoom ? 0xFF10B981 : 0xFF8B5CF6;
+
+			if (zDur > 0)
+			{
+				var zBar:FlxSprite = new FlxSprite(ZOOM_X + ZOOM_W - 7, zY).makeGraphic(5, Std.int(Math.max(1, zDur * GRID_SIZE)), zCol);
+				zBar.alpha = 0.5;
+				zoomRendered.add(zBar);
+			}
+
+			if (zev == curSelectedZoom)
+			{
+				var zOutline:FlxSprite = new FlxSprite(ZOOM_X - 2, zY - 1).makeGraphic(ZOOM_W + 4, GRID_SIZE, 0xFFFACC15);
+				zoomRendered.add(zOutline);
+			}
+
+			var zSpr:FlxSprite = new FlxSprite(ZOOM_X, zY).makeGraphic(ZOOM_W, GRID_SIZE - 2, zCol);
+			zSpr.alpha = 0.85;
+			zoomRendered.add(zSpr);
+
+			var zTxt:FlxText = new FlxText(ZOOM_X, zY + 2, ZOOM_W, zev.hasZoom ? Std.string(ZoomScript.round(zev.zoom, 3)) : "bop", 10);
+			zTxt.color = 0xFFFFFFFF;
+			zTxt.alignment = CENTER;
+			zoomRendered.add(zTxt);
+
+			if (zev.hasZoom)
+			{
+				var zEase:FlxText = new FlxText(ZOOM_X, zY + 15, ZOOM_W, zev.ease, 8);
+				zEase.color = 0xFFE2E8F0;
+				zEase.alignment = CENTER;
+				zoomRendered.add(zEase);
+			}
+
+			if (zev.hasMod)
+			{
+				var zMod:FlxText = new FlxText(ZOOM_X, zY + 26, ZOOM_W, zev.interval + "x" + zev.mult, 8);
+				zMod.color = 0xFFFDE68A;
+				zMod.alignment = CENTER;
+				zoomRendered.add(zMod);
 			}
 		}
 	}
@@ -1197,6 +1323,381 @@ class ChartingState extends MusicBeatState
 		updatingBpmUI = false;
 	}
 
+	function findProjectRoot():String
+	{
+		#if sys
+		var p:String = haxe.io.Path.removeTrailingSlashes(Sys.getCwd());
+
+		for (i in 0...8)
+		{
+			if (FileSystem.exists(p + "/Project.xml"))
+				return p;
+
+			var parent:String = haxe.io.Path.directory(p);
+			if (parent == "" || parent == p)
+				break;
+			p = parent;
+		}
+		#end
+		return null;
+	}
+
+	function loadZoomScript():Void
+	{
+		zoomScript = new ZoomScript();
+		zoomPaths = [];
+		zoomWritable = false;
+		zoomDirty = false;
+
+		#if sys
+		var song:String = _song.song.toLowerCase();
+
+		var gameDirs:Array<String> = [];
+		for (d in ModManager.dirs('songs/' + song))
+			gameDirs.push(d);
+
+		var srcDirs:Array<String> = [];
+		var root:String = findProjectRoot();
+		if (root != null)
+		{
+			srcDirs.push(root + '/assets/songs/' + song);
+			srcDirs.push(root + '/assets/preload/songs/' + song);
+		}
+		srcDirs.push('assets/songs/' + song);
+		srcDirs.push('assets/preload/songs/' + song);
+
+		var seen:Array<String> = [];
+		var existing:Array<String> = [];
+		var primary:String = null;
+		var firstDir:String = null;
+		var primaryIsGame:Bool = false;
+
+		var all:Array<String> = gameDirs.concat(srcDirs);
+		for (i in 0...all.length)
+		{
+			var dir:String = all[i];
+			while (dir.length > 1 && dir.endsWith('/'))
+				dir = dir.substr(0, dir.length - 1);
+
+			if (!FileSystem.exists(dir) || !FileSystem.isDirectory(dir))
+				continue;
+
+			var full:String = FileSystem.fullPath(dir);
+			if (seen.contains(full))
+				continue;
+			seen.push(full);
+
+			if (firstDir == null)
+				firstDir = dir;
+
+			var f:String = dir + '/events.hx';
+			if (FileSystem.exists(f))
+			{
+				existing.push(f);
+				if (primary == null)
+					primary = f;
+			}
+		}
+
+		if (primary == null && firstDir != null)
+			primary = firstDir + '/events.hx';
+
+		if (primary == null)
+		{
+			showStatus("Zoom events: no song folder found for '" + song + "'");
+			return;
+		}
+
+		zoomPaths = [primary];
+		zoomWritable = true;
+
+		if (FileSystem.exists(primary))
+		{
+			var content:String = File.getContent(primary).replace("\r\n", "\n");
+			zoomScript = ZoomScript.parse(content);
+
+			if (!zoomScript.valid)
+			{
+				zoomWritable = false;
+				showStatus("events.hx has no 'switch (curStep)' - zoom editor is read-only");
+				return;
+			}
+
+			var primFull:String = FileSystem.fullPath(primary);
+			for (f in existing)
+			{
+				if (FileSystem.fullPath(f) == primFull)
+					continue;
+
+				if (File.getContent(f).replace("\r\n", "\n") == content)
+					zoomPaths.push(f);
+			}
+		}
+		#else
+		showStatus("Zoom events can only be edited on sys targets");
+		#end
+	}
+
+	function saveZoomScript():Void
+	{
+		#if sys
+		if (!zoomWritable || !zoomDirty)
+			return;
+
+		var text:String = zoomScript.write();
+		var written:Int = 0;
+
+		for (p in zoomPaths)
+		{
+			try
+			{
+				if (FileSystem.exists(p) && !zoomBackedUp.contains(p))
+				{
+					File.copy(p, p + '.bak');
+					zoomBackedUp.push(p);
+				}
+
+				File.saveContent(p, text);
+				written++;
+			}
+			catch (e:Dynamic)
+			{
+				showStatus("Error while writing " + p + ": " + e);
+			}
+		}
+
+		if (written > 0)
+		{
+			zoomDirty = false;
+			showStatus("Saved events.hx (" + written + " file" + (written == 1 ? "" : "s") + ", " + zoomScript.events.length + " events)");
+			updateZoomUI();
+		}
+		#end
+	}
+
+	function markZoomDirty():Void
+	{
+		zoomDirty = true;
+		dirtyNotes = true;
+		updateZoomUI();
+	}
+
+	function addZoomUI():Void
+	{
+		var tab:FlxUI = new FlxUI(null, UI_box);
+		tab.name = 'Zoom';
+
+		var addLabel = function(s:FlxUINumericStepper, t:String)
+		{
+			var f:FlxText = new FlxText(s.x + 70, s.y, 0, t, 8);
+			f.color = 0xFFE2E8F0;
+			tab.add(f);
+		};
+
+		zoomSelTxt = new FlxText(10, 8, 280, "", 8);
+		zoomSelTxt.color = 0xFFE2E8F0;
+		tab.add(zoomSelTxt);
+
+		stepperZoomStep = new FlxUINumericStepper(10, 42, 1, 0, 0, 99999, 0);
+		stepperZoomStep.name = 'zoom_step';
+		steppers.push(stepperZoomStep);
+		tab.add(stepperZoomStep);
+		addLabel(stepperZoomStep, "Step");
+
+		check_zoomHasZoom = new FlxUICheckBox(10, 68, null, null, "Zoom tween", 100);
+		check_zoomHasZoom.checked = zoomHasZoom;
+		check_zoomHasZoom.callback = function()
+		{
+			if (updatingZoomUI)
+				return;
+			zoomHasZoom = check_zoomHasZoom.checked;
+			applyZoomUI();
+		};
+		tab.add(check_zoomHasZoom);
+
+		stepperZoomValue = new FlxUINumericStepper(10, 93, 0.05, zoomValue, 0.05, 5, 3);
+		stepperZoomValue.value = zoomValue;
+		stepperZoomValue.name = 'zoom_value';
+		steppers.push(stepperZoomValue);
+		tab.add(stepperZoomValue);
+		addLabel(stepperZoomValue, "Target zoom");
+
+		stepperZoomDur = new FlxUINumericStepper(10, 118, 1, zoomDur, 0, 512, 2);
+		stepperZoomDur.value = zoomDur;
+		stepperZoomDur.name = 'zoom_dur';
+		steppers.push(stepperZoomDur);
+		tab.add(stepperZoomDur);
+		addLabel(stepperZoomDur, "Duration (steps)");
+
+		var txtEase:FlxText = new FlxText(10 + 140, 143, 0, "Ease", 8);
+		txtEase.color = 0xFFE2E8F0;
+		tab.add(txtEase);
+
+		check_zoomHasMod = new FlxUICheckBox(10, 178, null, null, "Cam bop change (camZoomInterval)", 220);
+		check_zoomHasMod.checked = zoomHasMod;
+		check_zoomHasMod.callback = function()
+		{
+			if (updatingZoomUI)
+				return;
+			zoomHasMod = check_zoomHasMod.checked;
+			applyZoomUI();
+		};
+		tab.add(check_zoomHasMod);
+
+		stepperZoomInterval = new FlxUINumericStepper(10, 203, 1, zoomInterval, 1, 9999, 0);
+		stepperZoomInterval.value = zoomInterval;
+		stepperZoomInterval.name = 'zoom_interval';
+		steppers.push(stepperZoomInterval);
+		tab.add(stepperZoomInterval);
+		addLabel(stepperZoomInterval, "Interval (beats)");
+
+		stepperZoomMult = new FlxUINumericStepper(10, 228, 0.1, zoomMult, 0, 20, 2);
+		stepperZoomMult.value = zoomMult;
+		stepperZoomMult.name = 'zoom_mult';
+		steppers.push(stepperZoomMult);
+		tab.add(stepperZoomMult);
+		addLabel(stepperZoomMult, "Strength (1 = 0.015 / 0.03)");
+
+		var deleteBtn:FlxButton = new FlxButton(10, 258, "Delete selected", function()
+		{
+			if (curSelectedZoom != null)
+			{
+				zoomScript.events.remove(curSelectedZoom);
+				curSelectedZoom = null;
+				markZoomDirty();
+			}
+		});
+		tab.add(deleteBtn);
+
+		var saveBtn:FlxButton = new FlxButton(deleteBtn.x + deleteBtn.width + 10, 258, "Save events.hx", function()
+		{
+			saveZoomScript();
+		});
+		tab.add(saveBtn);
+
+		var reloadBtn:FlxButton = new FlxButton(saveBtn.x + saveBtn.width + 10, 258, "Reload file", function()
+		{
+			curSelectedZoom = null;
+			loadZoomScript();
+			updateZoomUI();
+			dirtyNotes = true;
+			showStatus("events.hx reloaded");
+		});
+		tab.add(reloadBtn);
+
+		var txtInfo:FlxText = new FlxText(10, 288, 280,
+			"Zoom lane (right of the camera lane): click = new event with the values above, click on an event = select it, right click = remove. " +
+			"Events sit on whole steps. Changes are written to events.hx with Ctrl+S, the Save button here, or when you playtest (Enter). " +
+			"A backup (events.hx.bak) is made once per session. Handwritten code in events.hx is kept as is.",
+			8);
+		txtInfo.color = 0xFF94A3B8;
+		tab.add(txtInfo);
+
+		zoomPathTxt = new FlxText(10, 365, 280, "", 8);
+		zoomPathTxt.color = 0xFF64748B;
+		tab.add(zoomPathTxt);
+
+		dropZoomEase = new FlxUIDropDownMenu(10, 143, FlxUIDropDownMenu.makeStrIdLabelArray(ZOOM_EASES, true), function(id:String)
+		{
+			if (updatingZoomUI)
+				return;
+
+			zoomEaseName = ZOOM_EASES[Std.parseInt(id)];
+			applyZoomUI();
+		});
+		dropZoomEase.selectedLabel = zoomEaseName;
+		tab.add(dropZoomEase);
+
+		UI_box.addGroup(tab);
+
+		updateZoomUI();
+	}
+
+	function applyZoomUI():Void
+	{
+		if (curSelectedZoom == null || !zoomWritable)
+			return;
+
+		var e:ZoomEvent = curSelectedZoom;
+
+		if (!zoomHasZoom && !zoomHasMod && e.extra == "")
+		{
+			showStatus("An event needs a zoom tween or a bop change - right click it to remove it");
+			updateZoomUI();
+			return;
+		}
+
+		if (zoomStepVal != e.step)
+		{
+			for (o in zoomScript.events)
+			{
+				if (o != e && o.step == zoomStepVal)
+				{
+					showStatus("There is already a zoom event at step " + zoomStepVal);
+					updateZoomUI();
+					return;
+				}
+			}
+
+			e.step = zoomStepVal;
+			zoomScript.events.sort(function(a, b) return a.step - b.step);
+		}
+
+		e.hasZoom = zoomHasZoom;
+		e.zoom = zoomValue;
+		e.dur = zoomDur;
+		e.durIsSec = false;
+		e.ease = zoomEaseName;
+
+		e.hasMod = zoomHasMod;
+		e.interval = zoomInterval;
+		if (ZoomScript.round(e.mult, 4) != ZoomScript.round(zoomMult, 4))
+			e.mult = zoomMult;
+
+		markZoomDirty();
+	}
+
+	function updateZoomUI():Void
+	{
+		updatingZoomUI = true;
+
+		if (curSelectedZoom != null)
+		{
+			var e:ZoomEvent = curSelectedZoom;
+			zoomStepVal = e.step;
+			zoomHasZoom = e.hasZoom;
+			zoomValue = e.zoom;
+			zoomDur = e.dur;
+			zoomEaseName = e.ease;
+			zoomHasMod = e.hasMod;
+			zoomInterval = e.interval;
+			zoomMult = e.mult;
+		}
+
+		stepperZoomStep.value = zoomStepVal;
+		check_zoomHasZoom.checked = zoomHasZoom;
+		stepperZoomValue.value = zoomValue;
+		stepperZoomDur.value = zoomDur;
+		dropZoomEase.selectedLabel = zoomEaseName;
+		check_zoomHasMod.checked = zoomHasMod;
+		stepperZoomInterval.value = zoomInterval;
+		stepperZoomMult.value = zoomMult;
+
+		var dirtyMark:String = zoomDirty ? "  (unsaved)" : "";
+
+		if (!zoomWritable)
+			zoomSelTxt.text = "Zoom events are not editable (no writable events.hx found)";
+		else if (curSelectedZoom != null)
+			zoomSelTxt.text = "Selected: step " + curSelectedZoom.step + " @ " + Std.int(stepToTime(curSelectedZoom.step)) + " ms" + dirtyMark;
+		else
+			zoomSelTxt.text = "No zoom event selected. The values below are used for new events." + dirtyMark;
+
+		if (zoomPathTxt != null)
+			zoomPathTxt.text = (zoomPaths.length > 0) ? "File: " + zoomPaths.join("\n      ") : "";
+
+		updatingZoomUI = false;
+	}
+
 	function setCamEventMode(ev:CamEvent):Void
 	{
 		if (camEaseName == Song.CAM_CLASSIC)
@@ -1332,6 +1833,27 @@ class ChartingState extends MusicBeatState
 						camOffY = nums.value;
 
 					applyCamUI();
+				}
+			}
+			else if (wname == 'zoom_step' || wname == 'zoom_value' || wname == 'zoom_dur' || wname == 'zoom_interval' || wname == 'zoom_mult')
+			{
+				if (!updatingZoomUI)
+				{
+					switch (wname)
+					{
+						case 'zoom_step':
+							zoomStepVal = Std.int(nums.value);
+						case 'zoom_value':
+							zoomValue = nums.value;
+						case 'zoom_dur':
+							zoomDur = nums.value;
+						case 'zoom_interval':
+							zoomInterval = Std.int(nums.value);
+						case 'zoom_mult':
+							zoomMult = nums.value;
+					}
+
+					applyZoomUI();
 				}
 			}
 			else if (wname == 'bpm_value')
@@ -2126,6 +2648,64 @@ class ChartingState extends MusicBeatState
 			autosaveSong();
 		}
 
+		if ((FlxG.mouse.justPressed || FlxG.mouse.justPressedRight)
+			&& mx >= ZOOM_X
+			&& mx < ZOOM_X + ZOOM_W
+			&& my >= 0
+			&& my < songEndY)
+		{
+			if (!zoomWritable)
+				showStatus("Zoom events are not editable (see Zoom tab)");
+			else
+			{
+				var zStep:Int = Std.int(Math.floor(my / GRID_SIZE));
+				var hitZoom:ZoomEvent = null;
+
+				for (zev in zoomScript.events)
+				{
+					if (zev.step == zStep)
+					{
+						hitZoom = zev;
+						break;
+					}
+				}
+
+				if (FlxG.mouse.justPressedRight)
+				{
+					if (hitZoom != null)
+					{
+						zoomScript.events.remove(hitZoom);
+						if (curSelectedZoom == hitZoom)
+							curSelectedZoom = null;
+						markZoomDirty();
+					}
+				}
+				else if (hitZoom != null)
+				{
+					curSelectedZoom = hitZoom;
+					updateZoomUI();
+					dirtyNotes = true;
+					showStatus("Zoom event selected (Zoom tab)");
+				}
+				else
+				{
+					var newZoom:ZoomEvent = new ZoomEvent(zStep);
+					newZoom.hasZoom = zoomHasZoom || !zoomHasMod;
+					newZoom.zoom = zoomValue;
+					newZoom.dur = zoomDur;
+					newZoom.ease = zoomEaseName;
+					newZoom.hasMod = zoomHasMod;
+					newZoom.interval = zoomInterval;
+					newZoom.mult = zoomMult;
+
+					zoomScript.events.push(newZoom);
+					zoomScript.events.sort(function(a, b) return a.step - b.step);
+					curSelectedZoom = newZoom;
+					markZoomDirty();
+				}
+			}
+		}
+
 		if (mouseInGrid(mx, my))
 		{
 			dummyArrow.visible = true;
@@ -2163,6 +2743,7 @@ class ChartingState extends MusicBeatState
 			{
 				lastSection = curSection;
 				autosaveSong();
+				saveZoomScript();
 
 				PlayState.startPosition = shift ? music.time : 0;
 
@@ -2190,12 +2771,12 @@ class ChartingState extends MusicBeatState
 				{
 					UI_box.selected_tab -= 1;
 					if (UI_box.selected_tab < 0)
-						UI_box.selected_tab = 4;
+						UI_box.selected_tab = 5;
 				}
 				else
 				{
 					UI_box.selected_tab += 1;
-					if (UI_box.selected_tab >= 5)
+					if (UI_box.selected_tab >= 6)
 						UI_box.selected_tab = 0;
 				}
 			}
@@ -2317,6 +2898,8 @@ class ChartingState extends MusicBeatState
 
 	private function saveLevel()
 	{
+		saveZoomScript();
+
 		var json = {
 			"song": _song
 		};

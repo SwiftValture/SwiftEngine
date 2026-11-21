@@ -1,12 +1,9 @@
 package;
 
-import Controls.Control;
+import ui.OptionsSubState;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxSubState;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
@@ -17,7 +14,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var pauseOG:Array<String> = ['Resume', 'Restart Song', 'Options', 'Toggle Practice Mode', 'Exit to menu'];
+	var pauseOG:Array<String> = ['Resume', 'Restart Song', 'Options', 'Exit to menu'];
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
 
 	var menuItems:Array<String> = [];
@@ -155,15 +152,11 @@ class PauseSubState extends MusicBeatSubstate
 
 					FlxG.resetState();
 
-				case 'Toggle Practice Mode':
-					PlayState.practiceMode = !PlayState.practiceMode;
-					practiceText.visible = PlayState.practiceMode;
-
 				case 'Change Difficulty':
 					menuItems = difficultyChoices;
 					regenMenu();
 				case 'Options':
-					regenMenu();
+					openSubState(new ui.OptionsSubState());
 				case 'BACK':
 					menuItems = pauseOG;
 					regenMenu();

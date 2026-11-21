@@ -67,6 +67,7 @@ class PlayState extends MusicBeatState
 	var camZoomInterval:Int = 4;
 	var camZoomAmount:Float = 0.015;
 	var camHUDZoomAmount:Float = 0.03;
+	var camZoomMode:String = "beat";
 
 	private var curSong:String = "";
 
@@ -110,7 +111,7 @@ class PlayState extends MusicBeatState
 
 	public static var seenCutscene:Bool = false;
 
-	var comboGroup:ComboGroup;
+	public var comboGroup:ComboGroup;
 
 	var restartTimer:FlxTimer = new FlxTimer();
 	var vwooshNotes:FlxTypedGroup<Note>;
@@ -522,9 +523,12 @@ class PlayState extends MusicBeatState
 		add(c);
 	}
 
+	public static var windyCombo = false;
+
 	function loadSongEvents()
 	{
 		scripts.set('FlxG', FlxG);
+		scripts.set('windyCombo', windyCombo);
 		scripts.set('FlxTween', FlxTween);
 		scripts.set('FlxEase', FlxEase);
 		scripts.set('FlxMath', FlxMath);
@@ -774,7 +778,8 @@ class PlayState extends MusicBeatState
 
 	function danceHeads(beat:Int):Void
 	{
-		if (beat % gfSpeed == 0)
+		var gfInterval:Int = (gf.danceInterval > 0) ? gf.danceInterval : gfSpeed;
+		if (beat % gfInterval == 0)
 		{
 			var anim = gf.animation.curAnim;
 
@@ -784,14 +789,20 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (beat % 2 == 0)
+		var bfInterval:Int = (boyfriend.danceInterval > 0) ? boyfriend.danceInterval : 2;
+		if (beat % bfInterval == 0)
 		{
 			if (!boyfriend.animation.curAnim.name.startsWith("sing"))
 				boyfriend.dance();
+		}
+
+		var dadInterval:Int = (dad.danceInterval > 0) ? dad.danceInterval : 2;
+		if (beat % dadInterval == 0)
+		{
 			if (!dad.animation.curAnim.name.startsWith("sing"))
 				dad.dance();
 		}
-		else if (dad.curCharacter == 'spooky' && !dad.animation.curAnim.name.startsWith("sing"))
+		else if (dad.danceInterval <= 0 && dad.curCharacter == 'spooky' && !dad.animation.curAnim.name.startsWith("sing"))
 			dad.dance();
 	}
 
@@ -1190,6 +1201,8 @@ class PlayState extends MusicBeatState
 
 	override function closeSubState()
 	{
+		refreshPrefs();
+
 		if (paused)
 		{
 			unfreezeTweens();
@@ -1205,6 +1218,14 @@ class PlayState extends MusicBeatState
 		setFollowRate(camFollowLerp);
 
 		super.closeSubState();
+	}
+
+	function refreshPrefs():Void
+	{
+		camMovementPref = PreferencesMenu.getPref('camMovement');
+		camZoomPref = PreferencesMenu.getPref('camera-zoom');
+		testModchartPref = PreferencesMenu.getPref('Test Modchart');
+		offsetSing = PreferencesMenu.getPref('camMovementStrength');
 	}
 
 	function resyncVocals():Void
@@ -2168,6 +2189,7 @@ class PlayState extends MusicBeatState
 		var ty:Float = p.y + ((ev.y == null) ? 0 : ev.y);
 		var dur:Float = Song.camDuration(ev) * Conductor.stepCrochet / 1000;
 
+		syncCamFollowToCamera();
 		setCamFollowLerp(CAM_TWEEN_LERP);
 
 		if (ev.ease.toUpperCase() == Song.CAM_INSTANT || dur <= 0)
@@ -2183,6 +2205,12 @@ class PlayState extends MusicBeatState
 				camTween = null;
 			}
 		});
+	}
+
+	function syncCamFollowToCamera():Void
+	{
+		var cam:FlxCamera = FlxG.camera;
+		camFollow.setPosition(cam.scroll.x + cam.width * 0.5 - cam.targetOffset.x, cam.scroll.y + cam.height * 0.5 - cam.targetOffset.y);
 	}
 
 	function tweenCameraToCharacter(target:String, duration:Float = 0.5, ease:String = 'quadOut', force:Bool = false)
@@ -2516,6 +2544,15 @@ class PlayState extends MusicBeatState
 
 		scripts.call('stepHit', [curStep]);
 
+		if (camZoomPref && camZoomMode == "step")
+		{
+			if (camZooming && FlxG.camera.zoom < 1.35 && curStep % camZoomInterval == 0)
+			{
+				cameraBopZoom += camZoomAmount;
+				camHUD.zoom += camHUDZoomAmount;
+			}
+		}
+
 		var syncPos:Float = Conductor.songPosition - Conductor.offset;
 
 		if (Math.abs(FlxG.sound.music.time - syncPos) > 20 || (SONG.needsVoices && Math.abs(vocals.time - syncPos) > 20))
@@ -2548,7 +2585,7 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += 0.03;
 			}
 
-			if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % camZoomInterval == 0)
+			if (camZooming && FlxG.camera.zoom < 1.35 && camZoomMode == "beat" && curBeat % camZoomInterval == 0)
 			{
 				cameraBopZoom += camZoomAmount;
 				camHUD.zoom += camHUDZoomAmount;
@@ -2581,19 +2618,25 @@ class PlayState extends MusicBeatState
 		stage.beatHit(curBeat);
 	}
 
-	function setCamZoomInterval(?interval:Int, ?cameraZoom:Float, ?hudZoom:Float)
+	function setCamZoomInterval(?interval:Int, ?cameraZoom:Float, ?hudZoom:Float, ?mode:String)
 	{
 		if (interval == null || cameraZoom == null || hudZoom == null)
 		{
 			camZoomInterval = 4;
 			camZoomAmount = 0.015;
 			camHUDZoomAmount = 0.03;
+			camZoomMode = "beat";
 			return;
 		}
 
 		camZoomInterval = interval;
 		camZoomAmount = cameraZoom;
 		camHUDZoomAmount = hudZoom;
+
+		if (mode != null && (mode.toLowerCase() == "step" || mode.toLowerCase() == "steps"))
+			camZoomMode = "step";
+		else
+			camZoomMode = "beat";
 	}
 
 	override function destroy()

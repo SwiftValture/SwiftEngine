@@ -1,10 +1,15 @@
+function create()
+{
+	setCameraOffset('dad', 200, 150);
+	setCameraOffset('gf', 0, 200);
+	setDefaultCamZoom(0.9);
+}
+
 function stepHit(curStep)
 {
 	switch (curStep)
 	{
 		case 0:
-			// Camera Modulo Change | time: 0 | params: [888,1]
-
 			camZoomInterval(888, 0.015, 0.03);
 			camGame.zoom += 0.01;
 			camHUD.zoom += 0.03;
@@ -48,7 +53,6 @@ function stepHit(curStep)
 		case 32:
 			camGame.zoom += 0.01;
 			camHUD.zoom += 0.03;
-		// Camera Movement | time: 2758.62069 | params: [1]
 
 		case 35:
 			camGame.zoom += 0.01;
@@ -634,12 +638,7 @@ function stepHit(curStep)
 		case 764:
 			camGame.zoom += 0.01;
 			camHUD.zoom += 0.03;
-
-		case 768:
-			// Camera Modulo Change | time: 66206.896552 | params: [1,1.2]
-
 			camZoomInterval(1, 0.018, 0.036);
-		// Camera Movement | time: 66206.896552 | params: [0]
 
 		case 896:
 			// Camera Modulo Change | time: 77241.37931 | params: [1,1.2]
@@ -1546,14 +1545,12 @@ function stepHit(curStep)
 		// Camera Movement | time: 165517.241379 | params: [0]
 
 		case 2032:
-			// Camera Modulo Change | time: 175172.413793 | params: [2,1]
-
-			camZoomInterval(2, 0.015, 0.03);
+			camZoomInterval(2, 0.015, 0.03, "step");
 
 		case 2040:
 			// Camera Modulo Change | time: 175862.068966 | params: [1,0.9]
 
-			camZoomInterval(1, 0.0135, 0.027);
+			camZoomInterval(1, 0.0135, 0.027, "step");
 
 		case 2048:
 			// Camera Modulo Change | time: 176551.724138 | params: [1,1.2]
