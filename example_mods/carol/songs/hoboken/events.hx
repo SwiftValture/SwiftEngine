@@ -3,6 +3,10 @@ function create()
 	setCameraOffset('dad', 200, 150);
 	setCameraOffset('gf', 0, 200);
 	setDefaultCamZoom(0.9);
+
+	fish = new FishEyeShader();
+	fish.dist.value = [0.03];
+	// FlxG.camera.filters = [new ShaderFilter(fish)];
 }
 
 function stepHit(curStep)

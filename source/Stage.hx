@@ -31,6 +31,8 @@ import shaderslmfao.RainShader;
 import shaderslmfao.Vinegar;
 import shaderslmfao.GausianBlur;
 import shaderslmfao.WarpShader;
+import shaderslmfao.FishEyeShader;
+import ui.PreferencesMenu;
 #if (VIDEOS_ALLOWED && !html5)
 import hxcodec.VideoSprite;
 #end
@@ -201,6 +203,7 @@ class Stage
 		v.set('foregroundSprites', foregroundSprites);
 		v.set('daPixelZoom', PlayState.daPixelZoom);
 		v.set('VIDEOS_ALLOWED', #if (VIDEOS_ALLOWED && !html5) true #else false #end);
+		v.set('PreferencesMenu', PreferencesMenu);
 
 		v.set('add', function(o:FlxBasic):FlxBasic
 		{
@@ -275,6 +278,7 @@ class Stage
 		v.set('TankmenBG', TankmenBG);
 		v.set('ShaderFilter', ShaderFilter);
 		v.set('AdjustColorShader', AdjustColorShader);
+		v.set('FishEyeShader', FishEyeShader);
 		v.set('BuildingShaders', BuildingShaders);
 		v.set('RainShader', RainShader);
 		v.set('MissMeShader', MissMeShader);
@@ -423,6 +427,26 @@ class Stage
 	public function onSongStart(song:String):Void
 	{
 		callScript('onSongStart', [song]);
+	}
+
+	public function onOpenSubState():Void
+	{
+		callScript('onOpenSubState');
+	}
+
+	public function onCloseSubState():Void
+	{
+		callScript('onCloseSubState');
+	}
+
+	public function onFocus():Void
+	{
+		callScript('onFocus');
+	}
+
+	public function onFocusLost():Void
+	{
+		callScript('onFocusLost');
 	}
 
 	public function postUpdate(elapsed:Float):Void

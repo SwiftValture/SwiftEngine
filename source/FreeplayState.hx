@@ -3,10 +3,9 @@ package;
 #if discord_rpc
 import Discord.DiscordClient;
 #end
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
+import flixel.util.FlxTimer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
@@ -34,6 +33,7 @@ class FreeplayState extends MusicBeatState
 	var noChartData:FlxSprite;
 	var dataText:FlxText;
 	var currentPreview:String = '';
+	var previewTimer:FlxTimer;
 
 	var coolColors:Array<Int> = [
 		0xff9271fd,
@@ -309,8 +309,14 @@ class FreeplayState extends MusicBeatState
 
 		currentPreview = songTitle;
 
-		FlxG.sound.playMusic(Paths.inst(songTitle), 0.7);
-		playingSong = true;
+		if (previewTimer != null)
+			previewTimer.cancel();
+
+		previewTimer = new FlxTimer().start(1, function(timer:FlxTimer)
+		{
+			FlxG.sound.playMusic(Paths.inst(songTitle), 0.7);
+			playingSong = true;
+		});
 	}
 
 	function changeDiff(change:Int = 0)

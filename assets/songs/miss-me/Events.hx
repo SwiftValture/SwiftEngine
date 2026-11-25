@@ -21,18 +21,23 @@ function stepHit(step)
 			camHUD.alpha = 1.0;
 		case 248:
 			dad.playAnim("laugh", true);
+			FlxTween.cancelTweensOf(camGame);
 			FlxTween.tween(camGame, {angle: -1}, Conductor.stepCrochet / 1000 * 5, {ease: FlxEase.quartOut});
 			moveCamera(true);
 		case 250:
 			dad.playAnim("laugh", true);
+			FlxTween.cancelTweensOf(camGame);
 			FlxTween.tween(camGame, {angle: -2}, Conductor.stepCrochet / 1000 * 5, {ease: FlxEase.quartOut});
 		case 252:
 			dad.playAnim("laugh", true);
+			FlxTween.cancelTweensOf(camGame);
 			FlxTween.tween(camGame, {angle: -3}, Conductor.stepCrochet / 1000 * 5, {ease: FlxEase.quartOut});
 		case 254:
 			dad.playAnim("laugh", true);
+			FlxTween.cancelTweensOf(camGame);
 			FlxTween.tween(camGame, {angle: -4}, Conductor.stepCrochet / 1000 * 5, {ease: FlxEase.quartOut});
 		case 256:
+			FlxTween.cancelTweensOf(camGame);
 			FlxTween.tween(camGame, {angle: 0}, Conductor.stepCrochet / 1000 * 5, {ease: FlxEase.quartOut});
 			moveCamera(true);
 		case 292:

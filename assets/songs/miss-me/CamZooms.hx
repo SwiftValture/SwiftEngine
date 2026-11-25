@@ -6,6 +6,11 @@ function create()
 	setOpponentNotesVisible(false);
 }
 
+function postCreate()
+{
+	FlxG.camera.bgColor = FlxColor.fromRGB(255, 255, 255, 255);
+}
+
 function stepHit(curStep)
 {
 	switch (curStep)

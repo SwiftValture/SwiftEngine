@@ -3,27 +3,29 @@ function stepHit(curStep)
 	switch (curStep)
 	{
 		case 0:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 0.965517 | params: [0]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+		case 1:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
 				}
 			});
-		// Camera Movement | time: 0.965517 | params: [0]
-
-		case 1:
 			// Camera Modulo Change | time: 129 | params: [2,0.7]
+
+			camZoomInterval(2, 0.0105, 0.021);
 
 		case 52:
 			// Camera Movement | time: 4482.714286 | params: [1]
 
 		case 62:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -32,9 +34,9 @@ function stepHit(curStep)
 			});
 
 		case 94:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.3}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.3}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -45,26 +47,30 @@ function stepHit(curStep)
 		case 127:
 			// Camera Modulo Change | time: 10948 | params: [1,0.7]
 
-		case 132:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			camZoomInterval(1, 0.0105, 0.021);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 132:
+			// Camera Movement | time: 11379.965517 | params: [0]
+
+		case 133:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
 				}
 			});
-		// Camera Movement | time: 11379.965517 | params: [0]
 
 		case 148:
 			// Camera Movement | time: 12758.714286 | params: [1]
 
 		case 160:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
@@ -72,22 +78,24 @@ function stepHit(curStep)
 			});
 
 		case 176:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 15172.714286 | params: [2]
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 177:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.82);
 				}
 			});
-		// Camera Movement | time: 15172.714286 | params: [2]
 
 		case 224:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.9}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.9);
@@ -95,22 +103,24 @@ function stepHit(curStep)
 			});
 
 		case 240:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 20689.714286 | params: [1]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 241:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
 				}
 			});
-		// Camera Movement | time: 20689.714286 | params: [1]
 
 		case 260:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.95}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.95}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.95);
@@ -118,10 +128,10 @@ function stepHit(curStep)
 			});
 
 		case 280:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -129,10 +139,10 @@ function stepHit(curStep)
 			});
 
 		case 304:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
@@ -140,10 +150,10 @@ function stepHit(curStep)
 			});
 
 		case 312:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.15);
@@ -151,10 +161,10 @@ function stepHit(curStep)
 			});
 
 		case 320:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -162,10 +172,10 @@ function stepHit(curStep)
 			});
 
 		case 332:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.04}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.04}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.04);
@@ -173,10 +183,10 @@ function stepHit(curStep)
 			});
 
 		case 344:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.08}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.08}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.08);
@@ -184,10 +194,10 @@ function stepHit(curStep)
 			});
 
 		case 356:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.12}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.12}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.12);
@@ -195,10 +205,10 @@ function stepHit(curStep)
 			});
 
 		case 364:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.16}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.16}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.16);
@@ -208,11 +218,13 @@ function stepHit(curStep)
 		case 383:
 			// Camera Modulo Change | time: 33017 | params: [2,0.7]
 
-		case 384:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			camZoomInterval(2, 0.0105, 0.021);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 384:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -220,22 +232,24 @@ function stepHit(curStep)
 			});
 
 		case 392:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 33793.714286 | params: [2]
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 393:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.82);
 				}
 			});
-		// Camera Movement | time: 33793.714286 | params: [2]
 
 		case 472:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.88);
@@ -243,10 +257,10 @@ function stepHit(curStep)
 			});
 
 		case 480:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.82);
@@ -254,10 +268,10 @@ function stepHit(curStep)
 			});
 
 		case 496:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.88);
@@ -267,13 +281,16 @@ function stepHit(curStep)
 		case 511:
 			// Camera Modulo Change | time: 44051 | params: [1,0.9]
 
+			camZoomInterval(1, 0.0135, 0.027);
+
 		case 512:
 			// Camera Movement | time: 44137.714286 | params: [1]
 
-			FlxTween.cancelTweensOf(FlxG.camera);
+		case 513:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -281,10 +298,10 @@ function stepHit(curStep)
 			});
 
 		case 544:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.05);
@@ -292,10 +309,10 @@ function stepHit(curStep)
 			});
 
 		case 576:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -303,10 +320,10 @@ function stepHit(curStep)
 			});
 
 		case 608:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.04}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.04}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.04);
@@ -314,10 +331,10 @@ function stepHit(curStep)
 			});
 
 		case 614:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.08}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.08}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.08);
@@ -325,10 +342,10 @@ function stepHit(curStep)
 			});
 
 		case 620:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.12}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.12}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.12);
@@ -336,10 +353,10 @@ function stepHit(curStep)
 			});
 
 		case 626:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.16}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.16}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.16);
@@ -347,10 +364,10 @@ function stepHit(curStep)
 			});
 
 		case 632:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.12}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.12}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.12);
@@ -360,11 +377,13 @@ function stepHit(curStep)
 		case 639:
 			// Camera Modulo Change | time: 55086 | params: [1,1.2]
 
-		case 640:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			camZoomInterval(1, 0.018, 0.036);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 640:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -372,22 +391,24 @@ function stepHit(curStep)
 			});
 
 		case 648:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 55862.714286 | params: [2]
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 649:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.82);
 				}
 			});
-		// Camera Movement | time: 55862.714286 | params: [2]
 
 		case 700:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.88);
@@ -395,22 +416,24 @@ function stepHit(curStep)
 			});
 
 		case 708:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 61034.714286 | params: [1]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 709:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
 				}
 			});
-		// Camera Movement | time: 61034.714286 | params: [1]
 
 		case 726:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
@@ -418,10 +441,10 @@ function stepHit(curStep)
 			});
 
 		case 760:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.15);
@@ -429,10 +452,10 @@ function stepHit(curStep)
 			});
 
 		case 768:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.2);
@@ -440,10 +463,10 @@ function stepHit(curStep)
 			});
 
 		case 816:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.25}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.25}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.25);
@@ -451,10 +474,10 @@ function stepHit(curStep)
 			});
 
 		case 832:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.2);
@@ -462,10 +485,10 @@ function stepHit(curStep)
 			});
 
 		case 844:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.15);
@@ -473,10 +496,10 @@ function stepHit(curStep)
 			});
 
 		case 856:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
@@ -486,11 +509,13 @@ function stepHit(curStep)
 		case 863:
 			// Camera Modulo Change | time: 74396 | params: [4,1.5]
 
-		case 864:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			camZoomInterval(4, 0.0225, 0.045);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 864:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.05);
@@ -498,10 +523,10 @@ function stepHit(curStep)
 			});
 
 		case 880:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -511,25 +536,30 @@ function stepHit(curStep)
 		case 895:
 			// Camera Modulo Change | time: 77155 | params: [1,0.8]
 
-		case 896:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			camZoomInterval(1, 0.012, 0.024);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 896:
+			// Camera Movement | time: 77241.714286 | params: [2]
+
+		case 897:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.82);
 				}
 			});
-		// Camera Movement | time: 77241.714286 | params: [2]
 
 		case 932:
 			// Camera Movement | time: 80344.714286 | params: [1]
 
-			FlxTween.cancelTweensOf(FlxG.camera);
+		case 933:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -537,10 +567,10 @@ function stepHit(curStep)
 			});
 
 		case 937:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
@@ -548,10 +578,10 @@ function stepHit(curStep)
 			});
 
 		case 942:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -559,10 +589,10 @@ function stepHit(curStep)
 			});
 
 		case 976:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.05);
@@ -570,10 +600,10 @@ function stepHit(curStep)
 			});
 
 		case 992:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
@@ -581,10 +611,10 @@ function stepHit(curStep)
 			});
 
 		case 1006:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
@@ -592,34 +622,37 @@ function stepHit(curStep)
 			});
 
 		case 1024:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 88275.965517 | params: [0]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
 				}
 			});
-		// Camera Movement | time: 88275.965517 | params: [0]
 
 		case 1042:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 89827.714286 | params: [2]
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 1043:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.82}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.82);
 				}
 			});
-		// Camera Movement | time: 89827.714286 | params: [2]
 
 		case 1056:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.88}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(0.88);
@@ -627,21 +660,23 @@ function stepHit(curStep)
 			});
 
 		case 1088:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 93793.714286 | params: [1]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
-				ease: FlxEase.expo,
+		case 1089:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1);
 				}
 			});
-		// Camera Movement | time: 93793.714286 | params: [1]
 
 		case 1114:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 0.95}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 0.95}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -650,9 +685,9 @@ function stepHit(curStep)
 			});
 
 		case 1120:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -661,9 +696,9 @@ function stepHit(curStep)
 			});
 
 		case 1136:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -672,9 +707,9 @@ function stepHit(curStep)
 			});
 
 		case 1144:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -683,9 +718,9 @@ function stepHit(curStep)
 			});
 
 		case 1152:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -706,57 +741,65 @@ function stepHit(curStep)
 			// Camera Movement | time: 103793.714286 | params: [1]
 
 		case 1216:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 104827.965517 | params: [0]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
+		case 1217:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.05}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.05);
 				}
 			});
-		// Camera Movement | time: 104827.965517 | params: [0]
 
 		case 1228:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 105862.714286 | params: [1]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+		case 1229:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.1);
 				}
 			});
-		// Camera Movement | time: 105862.714286 | params: [1]
 
 		case 1240:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 106896.965517 | params: [0]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
+		case 1241:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.15}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.15);
 				}
 			});
-		// Camera Movement | time: 106896.965517 | params: [0]
 
 		case 1252:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			// Camera Movement | time: 107931.714286 | params: [1]
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
+		case 1253:
+			FlxTween.cancelTweensOf(cameraZoomTarget);
+
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.2}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
 					setDefaultCamZoom(1.2);
 				}
 			});
-		// Camera Movement | time: 107931.714286 | params: [1]
 
 		case 1272:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1.1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -765,9 +808,9 @@ function stepHit(curStep)
 			});
 
 		case 1280:
-			FlxTween.cancelTweensOf(FlxG.camera);
+			FlxTween.cancelTweensOf(cameraZoomTarget);
 
-			FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
+			FlxTween.tween(cameraZoomTarget, {zoom: 1}, Conductor.stepCrochet / 1000 * 32, {
 				ease: FlxEase.expoOut,
 				onComplete: function(tween)
 				{
@@ -777,5 +820,7 @@ function stepHit(curStep)
 
 		case 1304:
 			// Camera Modulo Change | time: 112413 | params: [4,0]
+
+			camZoomInterval(4, 0, 0);
 	}
 }

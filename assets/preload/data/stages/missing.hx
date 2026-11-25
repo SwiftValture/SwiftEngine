@@ -61,6 +61,9 @@ function onSongStart(song)
 	};
 
 	video.playVideo("assets/music/intro.mp4");
+
+	trace(Type.getInstanceFields(Type.getClass(video)));
+	trace(Type.getInstanceFields(Type.getClass(video.bitmap)));
 }
 
 function getShaderTime()
@@ -133,4 +136,36 @@ function stepHit(curStep)
 		case 1024:
 			tweenMix(0.5, 0);
 	}
+}
+
+function onFocusLost()
+{
+	if (video == null)
+		return;
+
+	video.bitmap.pause();
+}
+
+function onFocus()
+{
+	if (video == null)
+		return;
+
+	video.bitmap.resume();
+}
+
+function onOpenSubState()
+{
+	if (video == null)
+		return;
+
+	video.bitmap.pause();
+}
+
+function onCloseSubState()
+{
+	if (video == null)
+		return;
+
+	video.bitmap.resume();
 }

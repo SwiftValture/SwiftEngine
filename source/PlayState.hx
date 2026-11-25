@@ -14,13 +14,14 @@ import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.tweens.misc.NumTween;
+import openfl.filters.ShaderFilter;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
 import ui.PreferencesMenu;
+import shaderslmfao.FishEyeShader;
 import ResultsState.ResultsStats;
 
 using StringTools;
@@ -119,6 +120,9 @@ class PlayState extends MusicBeatState
 	var strumsGenerated:Bool = false;
 
 	static inline var VWOOSH_TIME:Float = 0.5;
+
+	static inline var HOLD_DROP_EXTRA_DAMAGE:Float = 0.05;
+	static inline var HOLD_RELEASE_GRACE:Float = 80;
 
 	var gfCutsceneLayer:FlxGroup;
 	var bfTankCutsceneLayer:FlxGroup;
@@ -546,6 +550,8 @@ class PlayState extends MusicBeatState
 		scripts.set('comboGroup', comboGroup);
 		scripts.set('defaultCamZoom', defaultCamZoom);
 		scripts.set('cameraBopZoom', cameraBopZoom);
+		scripts.set('FishEyeShader', FishEyeShader);
+		scripts.set('ShaderFilter', ShaderFilter);
 		scripts.set('setScrollSpeed', function(value:Float)
 		{
 			noteScrollSpeed = value * 0.45;
@@ -1196,6 +1202,9 @@ class PlayState extends MusicBeatState
 				startTimer.active = false;
 		}
 
+		scripts.call('onOpenSubState');
+		stage.onOpenSubState();
+
 		super.openSubState(SubState);
 	}
 
@@ -1218,6 +1227,9 @@ class PlayState extends MusicBeatState
 		setFollowRate(camFollowLerp);
 
 		super.closeSubState();
+
+		scripts.call('onCloseSubState');
+		stage.onCloseSubState();
 	}
 
 	function refreshPrefs():Void
@@ -1650,6 +1662,16 @@ class PlayState extends MusicBeatState
 				goodNoteHit(daNote);
 		}
 
+		if (daNote.isSustainNote && !daNote.wasGoodHit && daNote.trail != null && daNote.trail.dropped)
+		{
+			daNote.active = false;
+			daNote.visible = false;
+			daNote.kill();
+			notes.remove(daNote, true);
+			daNote.destroy();
+			return;
+		}
+
 		if (daNote.isSustainNote && daNote.wasGoodHit)
 		{
 			var fullyClipped:Bool = downscrollPref ? (daNote.y >= strumLineMid) : (daNote.y + daNote.height <= strumLineMid);
@@ -1668,17 +1690,19 @@ class PlayState extends MusicBeatState
 			if (daNote.tooLate)
 			{
 				if (daNote.trail != null)
-					daNote.trail.dropped = true;
-
-				health -= 0.0475;
-
-				if (splitVocals)
-					playerVocals.volume = 0;
+					dropHold(daNote.trail, true);
 				else
-					vocals.volume = 0;
+				{
+					health -= 0.0475;
 
-				killCombo();
-				noteMiss(daNote.noteData);
+					if (splitVocals)
+						playerVocals.volume = 0;
+					else
+						vocals.volume = 0;
+
+					killCombo();
+					noteMiss(daNote.noteData);
+				}
 			}
 
 			daNote.active = false;
@@ -1687,6 +1711,20 @@ class PlayState extends MusicBeatState
 			notes.remove(daNote, true);
 			daNote.destroy();
 		}
+	}
+
+	function dropHold(t:SustainTrail, penalty:Bool):Void
+	{
+		if (t.dropped)
+			return;
+
+		t.dropped = true;
+
+		if (!penalty)
+			return;
+
+		health -= 0.0475 + HOLD_DROP_EXTRA_DAMAGE;
+		noteMiss(t.noteDirection);
 	}
 
 	function updateTrails(noteTime:Float):Void
@@ -1741,6 +1779,9 @@ class PlayState extends MusicBeatState
 			{
 				t.holding = false;
 				strums.endHold(t.noteDirection, t.mustPress, keyHeld);
+
+				if (t.mustPress && !cpuControlled && !keyHeld && noteTime < t.strumTime + t.sustainLength)
+					dropHold(t, (t.strumTime + t.sustainLength - noteTime) > HOLD_RELEASE_GRACE);
 			}
 
 			var hideOpp:Bool = (middlescrollPref || hideOpponentNotes) && !t.mustPress;
@@ -2424,6 +2465,22 @@ class PlayState extends MusicBeatState
 		}
 
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+	}
+
+	override function onFocus()
+	{
+		super.onFocus();
+
+		scripts.call('onFocus');
+		stage.onFocus();
+	}
+
+	override function onFocusLost()
+	{
+		super.onFocusLost();
+
+		scripts.call('onFocusLost');
+		stage.onFocusLost();
 	}
 
 	function goodNoteHit(note:Note):Void
